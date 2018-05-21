@@ -1,0 +1,15 @@
+/nbproject/private/
+fromDrupal.php
+config.php
+nbproject/project.properties
+nbproject/project.xml
+profilFromDrupal.html
+languages/langJS.html
+log.txt
+logall.txt
+file.csv
+distribution.txt
+entities.csv
+appearences.csv
+bigSellersImport.php
+*.tsv
