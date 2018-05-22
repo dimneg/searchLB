@@ -46,6 +46,7 @@ class showResults {
         while ($i <= $sumResults) { 
             
             $name = $this->unaccent(mb_convert_case($uniqueResults[$i]['name'],MB_CASE_UPPER, "UTF-8"));
+            $url = $uniqueResults[$i]['link'];
             # $corporation = $uniqueResults[$i]['corporate_id'];
            
           
@@ -65,7 +66,7 @@ class showResults {
                 //....basic view 1...\\
                 echo "<td style=\" text-align:left; border-left: 0px solid #ccc; font-size:15px; padding-right:0px;  width:400px;\">"; 
                       
-                echo "<a class='nameLink' href='#' target='_blank' >$name</a> ";	
+                echo "<a class='nameLink' href='$url' target='_blank' >$name</a> ";	
                 echo ' ';
                 $scorePresentation = $this->presentConfidence($sumResults,$uniqueResults[$i]['score']);             
                 echo " <font class='dataset' color=$scorePresentation[1] style='font-size: 0.77em'>$scorePresentation[0]</font></br>";
@@ -97,10 +98,10 @@ class showResults {
                    
                 
                 
-                echo ' <font class="dataset" color="#800080" style="font-size: 0.77em">Γ.Ε.Μ.Η.</font></br> '; 
-                echo 'Αρ. Γ.Ε.Μ.Η.: '.$this->hide_not_avail($uniqueResults[$i]['gemhNumber']);	
-                echo ' &nbsp Επιμελητήριο: '.$this->hide_not_avail($uniqueResults[$i]['chamber']);
-                echo  ' &nbsp [Ημ/νία: '.  $this->convertDate($uniqueResults[$i]['gemhDate']).']</br>';	
+               # echo ' <font class="dataset" color="#800080" style="font-size: 0.77em">Γ.Ε.Μ.Η.</font></br> '; 
+              #  echo 'Αρ. Γ.Ε.Μ.Η.: '.$this->hide_not_avail($uniqueResults[$i]['gemhNumber']);	
+              #  echo ' &nbsp Επιμελητήριο: '.$this->hide_not_avail($uniqueResults[$i]['chamber']);
+              #  echo  ' &nbsp [Ημ/νία: '.  $this->convertDate($uniqueResults[$i]['gemhDate']).']</br>';	
                 
                
                 #echo 'score :'.$uniqueResults[$i]['score']; 
