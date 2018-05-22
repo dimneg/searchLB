@@ -4,13 +4,13 @@ include 'config.php';
 $time_pre = microtime(true);
 $counter = 1;
 
-
+$dateUpdate = '2018-05-20';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
 $ch = curl_init("http://83.212.86.164:8983/solr/".personsSolrCore."/update?wt=json");
 
-$sql = "SELECT * FROM PersonalData where isGsisCompany = 0 limit 10000 offset 50000";
+$sql = "SELECT * FROM PersonalData where isGsisCompany = 0  and issueddate > '$dateUpdate'  ";
 
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {

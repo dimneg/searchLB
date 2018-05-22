@@ -430,7 +430,7 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
     }
     $resultsPresentation = new showResults();
     
-    $resultsPresentation -> presentResults(solrPath, corpSolrCore);
+    $resultsPresentation -> presentResults(solrPath);
     
     
     $time_post = microtime(true);
