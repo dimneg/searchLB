@@ -18,6 +18,7 @@ class collectData {
    
     
    function prepareResultsSolr($solrPath,$solrCore,$varKeyword,$personsUrl){
+       global $Results;
        $vat = $varKeyword;
        $ch = curl_init();
        

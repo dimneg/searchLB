@@ -12,7 +12,7 @@
  * @author dimitris negkas
  */
 class showResults {
-    function presentResults($solrPath, $corpSolrCore,$advChoiceArea,$advChoiceAmount){ //test 090166291
+    function presentResults($solrPath){ //test 090166291
         require_once 'collectData.php';
         global $Results;
         
