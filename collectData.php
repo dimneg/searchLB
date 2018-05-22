@@ -2,13 +2,13 @@
 
 
 class collectData {
-   function getAll($solrPath,$solrCore,$varKeyword){
+   function getAll($solrPath,$solrCore,$varKeyword,$personsUrl){
        global $Limit;
        #$this->prepareResults($DbPath,"elod_diaugeia_hybrids","buyerVatIdOrName","by_buyerDtls_VatIdOrName",$LuceneOperand,25,"score",$varKeyword,$couchUser,$couchPass);
        
 							
       
-       $this->prepareResultsSolr($solrPath,$solrCore,$varKeyword );       		  
+       $this->prepareResultsSolr($solrPath,$solrCore,$varKeyword,$personsUrl );       		  
       
        
 	
@@ -17,7 +17,7 @@ class collectData {
  }
    
     
-   function prepareResultsSolr($solrPath,$solrCore,$varKeyword){
+   function prepareResultsSolr($solrPath,$solrCore,$varKeyword,$personsUrl){
        $vat = $varKeyword;
        $ch = curl_init();
        
@@ -37,12 +37,13 @@ class collectData {
        $json = json_decode($response,true);
        curl_close($ch);	         
        
-        if(isset ($json['rows'])) {
-             foreach($json['rows'] as $r){  
-                  if (isset ($json['rows'])) {
+      if (isset ($json['response']['docs'][0])){
+             foreach ($json['response']['docs'] as $key => $value) {
+                  if (isset ($json['response']['docs'][0])) { //and more conditions
                        $newdata =  array (
-                            'name' => (isset($r['fields']['term'][1])) ? $r['fields']['term'][1] : null ,     
-                            'vat' => $r['fields']['term'][0]
+                            'name' => (isset($value['name'][0])) ? $value['name'][0] : null ,     
+                            'vat' => $value['vat'][0] , 
+                            'link' =>   $personsUrl.$value['vat'][0].'/basic'
                            );
                   }
                   $arrayElements = count($Results);
