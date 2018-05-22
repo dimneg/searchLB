@@ -418,12 +418,12 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
  #read all data
     $search = new collectData();
     if (is_numeric($varKeyword)){ //probaby afm
-        if (strlen(utf8_decode($varKeyword)) <=6 ) {
+       # if (strlen(utf8_decode($varKeyword)) <=6 ) {
              $search->getAll(solrPath,personsSolrCore, $varKeyword);	
-        }
-        else {
-            $search->getAllShort(solrPath,personsSolrCore,$varKeyword );	
-        }
+        #}
+        #else {
+         #   $search->getAllShort(solrPath,personsSolrCore,$varKeyword );	
+        #}
     }
     else {
 
