@@ -317,13 +317,10 @@ $crf3 = '';
 
     </style>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-      <title>Search OPJ</title>
+      <title>Search LB Persons</title>
    
        
-            <a href="index_en.php"> <img src="languages/images/en.png" alt="english" align="right" id="flags" width="27" height="18" > </a>   
-               <!-- <a href="index.php?lang=gr"> <img src="languages/images/gr.png" alt="greek" align="right" > </a> -->
-               <a href="index.php"> <img src="languages/images/gr.png" alt="greek" align="right" id="flags" width="27" height="18" > </a> 
-               
+            
              
              
               
@@ -333,86 +330,20 @@ $crf3 = '';
 
 <div class="row-fluid margin-bottom" align="center" >
  <!--<form action="index.php"  method="post" accept-charset="UTF-8"> -->
- <form action="index.php?varKeyword=<?php if (isset($_POST['formKeyword'])) echo $_POST['formKeyword'];  else echo $_GET['varKeyword']?>"    method="post" accept-charset="UTF-8"> 
+ <form action="searchLbPersons.php?varKeyword=<?php if (isset($_POST['formKeyword'])) echo $_POST['formKeyword'];  else echo $_GET['varKeyword']?>"    method="post" accept-charset="UTF-8"> 
 <p>			
- <input type="text" style="width: 580px; height: 32px;" name="formKeyword" placeholder="ΑΦΜ ή Όνομα" value="<?php if (isset($_POST['formKeyword'])) echo $_POST['formKeyword']; else echo $_GET['varKeyword'] ?>"  maxlength="70" autofocus /> 
+ <input type="text" style="width: 580px; height: 32px;" name="formKeyword" placeholder="Αναζήτηση με ΑΦΜ σε 546.568 μετόχους και διαχειριστές επιχειρήσεων" value="<?php if (isset($_POST['formKeyword'])) echo $_POST['formKeyword']; else echo $_GET['varKeyword'] ?>"  maxlength="70" autofocus /> 
  <!--<input type="text" style="width: 580px; height: 32px;" name="formKeyword" placeholder="ΑΦΜ ή Όνομα" value="<?php  echo $_GET['varKeyword'] ?>"  maxlength="70" autofocus /> 	-->		
-  <input type="submit"  name="formSubmit" value="index.php"  style="display: none;" > 
+  <input type="submit"  name="formSubmit" value="searchLbPersons.php"  style="display: none;" > 
   
-      <table  border="0" class="table" >
-             <tr>
-                 <td><I>Example corporation keywords: Oracle, Novartis, Atos, PricewaterhouseCoopers</I></td>      
-                    
-                 
-                 </tr> 
-      </table> 
+    
             
 <p>
    
      
 
  
-    <span id="advance_search_link" onClick="showHideAdvanceSearch()">Σύνθετη Αναζήτηση</span>
-									
-				<div id="advanced-search-box" <?php if(empty($advance_search_submit)) { ?>style="display:none;"<?php } ?>>
-					<label class="search-label">Αναζήτηση με Διεύθυνση:</label>
-					<div>
-						<input type="text" name="crf1" id="crf1" class="demoInputBox" action="index.php"  	/>
-					</div>
-					<label class="search-label">Αναζήτηση με ΤΚ:</label>
-					<div>
-						<input type="text" name="crf2" id="crf2" class="demoInputBox" value="<?php echo $crf2; ?>"	/> 
-                                             <!--   <form action="index.php?varKeyword=<?php echo $_POST['formKeyword']; ?>"    method="post" accept-charset="UTF-8" target="_blank" >				
-			                               <input type="text" class="demoInputBox" name="formKeyword" placeholder="ΤΚ"   /> 
-			                               <input type="submit" name="formSubmit" value="index.php"  style="display: none;" > -->
-                                                       </form>
-
-					</div>
-					 <table  border="0" class="table" >
-                                        <tr>
-                                        <td><I>Example: Name: "Oracle", Search in:  "Australia", Atos, Amount:">2M < 2B" </I></td>     
-                    
-                 
-                                        </tr> 
-                                        </table> 
-					<label class="search-label">Αναζήτηση σε:</label>
-					<div>
-						<select name="advSearch[search_in_area]" id="search_in_area" class="demoInputBox">
-							<option value="">Επιλογή:</option>
-							<option value="GR" <?php if($search_in_area=="GR") { echo "selected"; } ?>>ΕΛΛΑΔΑ</option>							
-                                                        <option value="AU" <?php if($search_in_area=="AU") { echo "selected"; } ?>>ΑΥΣΤΡΑΛΙΑ</option>
-                                                         <option value="DE" <?php if($search_in_area=="DE") { echo "selected"; } ?>>ΓΕΡΜΑΝΙΑ</option>
-                                                         <option value="UK" <?php if($search_in_area=="UK") { echo "selected"; } ?>>ΗΝΩΜΕΝΟ ΒΑΣΙΛΕΙΟ</option>
-                                                         <option value="FR" <?php if($search_in_area=="FR") { echo "selected"; } ?>>ΓΑΛΛΙΑ</option>
-                                                        <option value="SW" <?php if($search_in_area=="SW") { echo "selected"; } ?>>ΕΛΒΕΤΙΑ</option>
-                                                        <option value="DK" <?php if($search_in_area=="DK") { echo "selected"; } ?>>ΔΑΝΙΑ</option>
-                                                        
-                                                       
-						</select>
-					</div>
-                                        <label class="amount-label">Με αξιά:</label>
-					<div>
-						<select name="advSearch[search_in_amount]" id="search_in_amount" class="demoInputBox">
-							<option value="">Επιλογή:</option>
-							<option value="1" <?php if($search_in_amount=="1") { echo "selected"; } ?>> <2K </option>
-							<option value="2" <?php if($search_in_amount=="2") { echo "selected"; } ?>> >2Κ <2M </option>
-                                                        <option value="3" <?php if($search_in_amount=="3") { echo "selected"; } ?>> >2M <2B </option>
-                                                        <option value="4" <?php if($search_in_amount=="4") { echo "selected"; } ?>> >2B </option>
-                                                        
-						</select>
-					</div>
-                                          <div>
-                                 <div> <input type="submit" name="Go" class="btnSearch"  value="Search" action="index.php?varKeyword=<?php if (isset($_POST['formKeyword'])) echo $_POST['formKeyword'];  else echo $_GET['varKeyword']?>"  method="post" accept-charset="UTF-8" >
-                                     <!--  <input type="button" name="Go" value="Search" class="btnSearch" onclick="window.location.href='index.php?varKeyword=<?php if (isset($_POST['formKeyword'])) echo $_POST['formKeyword'];  else echo $_GET['varKeyword']?>'" /> -->
-                                          <!--    <a   type="submit" name="Go" class="btnSearch"  value="Search" href="index.php?varKeyword=<?php if (isset($_POST['formKeyword'])) echo $_POST['formKeyword'] ?>"  >Search</a>-->
-                                       <!--   <a class="searchTabs" href="index.php?varKeyword=<?php if (isset($_POST['formKeyword'])) echo $_POST['formKeyword']?>"   >search</a> -->
-                                        <!--   <a input type="submit" name="Go" class="btnSearch" value="Search" action="index.php?varKeyword=<?php if (isset($_POST['formKeyword'])) echo $_POST['formKeyword'];  else echo $_GET['varKeyword']?>"></a> -->
-                                 </div> 
-                                            <!--   <form action="index.php?varKeyword=<?php if (isset($_POST['formKeyword'])) echo $_POST['formKeyword'];  else echo $_GET['varKeyword']?>" method="post">   -->
-                                             <!--      <input type="submit" name="Go" class="btnSearch"  value="Search" > -->
-                                           <!--         </form>  -->
-				</div>
-				</div>
+   
 				
 				
 </p>
@@ -430,8 +361,8 @@ $crf3 = '';
 
 #print_r($_POST['formKeyword']);
 #print_r($_POST['advSearch']);
-$advChoiceArea = $_POST['advSearch']['search_in_area'];
-$advChoiceAmount = $_POST['advSearch']['search_in_amount'];
+#$advChoiceArea = $_POST['advSearch']['search_in_area'];
+#$advChoiceAmount = $_POST['advSearch']['search_in_amount'];
 #echo $advChoiceAmount; 
 #echo 'choices:'.$advChoiceArea.' '.$advChoiceAmount.PHP_EOL;   
 
