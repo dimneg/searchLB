@@ -2,13 +2,13 @@
 
 
 class collectData {
-   function getAll($LuceneOperand,$varKeyword,$DbPath,$couchUser,$couchPass,$solrPath,$solrCore,$sparqlServer,$corpSolrCore){
+   function getAll($solrPath,$varKeyword,$solrCore){
        global $Limit;
        #$this->prepareResults($DbPath,"elod_diaugeia_hybrids","buyerVatIdOrName","by_buyerDtls_VatIdOrName",$LuceneOperand,25,"score",$varKeyword,$couchUser,$couchPass);
        
 							
       
-       $this->prepareResultsSolr($DbPath,"elod_diaugeia_buyers","buyerVatIdOrNameV2","by_buyerDtls_VatIdOrName",$LuceneOperand,25,"score",$varKeyword,$couchUser,$couchPass,$solrPath,$solrCore,$sparqlServer,$corpSolrCore );       		  
+       $this->prepareResultsSolr($solrPath,$varKeyword,$solrCore );       		  
       
        
 	
@@ -23,7 +23,7 @@ class collectData {
        
        $url = $solrPath.$solrCore."/select?indent=on&q=vat:".$vat."&wt=json";
        $url = str_replace(' ','%20',$url);
-        echo $url.PHP_EOL;
+       echo $url.PHP_EOL;
        curl_setopt($ch, CURLOPT_URL, $url);
        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -36,6 +36,27 @@ class collectData {
        $response = curl_exec($ch); 
        $json = json_decode($response,true);
        curl_close($ch);	         
+       
+        if(isset ($json['rows'])) {
+             foreach($json['rows'] as $r){  
+                  if (isset ($json['rows'])) {
+                       $newdata =  array (
+                            'name' => (isset($r['fields']['term'][1])) ? $r['fields']['term'][1] : null ,     
+                            'vat' => $r['fields']['term'][0]
+                           );
+                  }
+                  $arrayElements = count($Results);
+                  if  ($arrayElements <= 1000 && isset($newdata)){
+                      $key = $this->searchForId($newdata['vat'], $Results,'vat');
+                      if ($key === NULL){
+                          $Results[] = $newdata;      //insert whole record
+                      }
+                      
+                  }
+                 
+             }
+            
+        }
        
    } 
     
@@ -79,7 +100,8 @@ class collectData {
         
 
         if(isset ($json['rows'])) {
-             foreach($json['rows'] as $r){                   
+             foreach($json['rows'] as $r){     
+                 
             
                 
                 global $Boost;
