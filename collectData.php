@@ -2,13 +2,13 @@
 
 
 class collectData {
-   function getAll($solrPath,$varKeyword,$solrCore){
+   function getAll($solrPath,$solrCore,$varKeyword){
        global $Limit;
        #$this->prepareResults($DbPath,"elod_diaugeia_hybrids","buyerVatIdOrName","by_buyerDtls_VatIdOrName",$LuceneOperand,25,"score",$varKeyword,$couchUser,$couchPass);
        
 							
       
-       $this->prepareResultsSolr($solrPath,$varKeyword,$solrCore );       		  
+       $this->prepareResultsSolr($solrPath,$solrCore,$varKeyword );       		  
       
        
 	

@@ -419,10 +419,10 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
     $search = new collectData();
     if (is_numeric($varKeyword)){ //probaby afm
         if (strlen(utf8_decode($varKeyword)) <=6 ) {
-             $search->getAll('',$varKeyword,DbPath,couchUser,couchPass,solrPath,altNamesSolrCore,sparqlServer,corpSolrCore,$advChoiceArea,$advChoiceAmount );	
+             $search->getAll($varKeyword,personsSolrCore,solrPath );	
         }
         else {
-            $search->getAllShort('*',$varKeyword,DbPath,couchUser,couchPass,solrPath,altNamesSolrCore,sparqlServer,corpSolrCore,$advChoiceArea,$advChoiceAmount );	
+            $search->getAllShort($varKeyword,personsSolrCore,solrPath );	
         }
     }
     else {
@@ -430,7 +430,7 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
     }
     $resultsPresentation = new showResults();
     
-    $resultsPresentation -> presentResults(solrPath, corpSolrCore,$advChoiceArea,$advChoiceAmount);
+    $resultsPresentation -> presentResults(solrPath, corpSolrCore);
     
     
     $time_post = microtime(true);
