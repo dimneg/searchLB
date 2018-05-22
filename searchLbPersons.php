@@ -8,7 +8,7 @@ $crf3 = '';
 ?>
 <html> 
     <header>   
-    <h2><center>Επιχειρήσεις</center></h2>
+    <h2><center>Διαχειριστές & Ιδιοκτήτες</center></h2>
      
   </header>
     <head>
