@@ -10,7 +10,7 @@ mysqli_set_charset($connGemh,"utf8");
 
 $ch = curl_init("http://83.212.86.164:8983/solr/".FRSolrCore."/update?wt=json");
 
-$sql = "SELECT * FROM Main where orgtype = 'FR'  and issueddate > '$dateUpdate'  limit 60000 offset 40000";
+$sql = "SELECT * FROM Main where orgtype = 'FR'  and issueddate > '$dateUpdate'  limit 40000 offset 510000";
 
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {

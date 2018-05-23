@@ -8,7 +8,7 @@ class collectData {
        
 							
       
-       $this->prepareResultsSolr($solrPath,$solrCore,$varKeyword,$personsUrl );       		  
+       $this->prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$personsUrl );       		  
       
        
 	
@@ -17,12 +17,12 @@ class collectData {
  }
    
     
-   function prepareResultsSolr($solrPath,$solrCore,$varKeyword,$personsUrl){
+   function prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$personsUrl){
        global $Results;
-       $vat = $varKeyword;
+       #$vat = $varKeyword;
        $ch = curl_init();
        
-       $url = $solrPath.$solrCore."/select?indent=on&q=vat:".$vat."&wt=json";
+       $url = $solrPath.$solrCore."/select?indent=on&q=".$field.":".$varKeyword."&wt=json";
        $url = str_replace(' ','%20',$url);
        #echo $url.PHP_EOL;
        curl_setopt($ch, CURLOPT_URL, $url);
