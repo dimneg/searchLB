@@ -24,6 +24,7 @@ class collectData {
        
        $url = $solrPath.$solrCore."/select?indent=on&q=".$field.":".$varKeyword.$operand."&wt=json";
        $url = str_replace(' ','%20',$url);
+       $url = str_replace('%','%25',$url);
        #echo $url.PHP_EOL;
        curl_setopt($ch, CURLOPT_URL, $url);
        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
@@ -35,7 +36,7 @@ class collectData {
          ));
        
        $response = curl_exec($ch); 
-       print_r($response);
+       #print_r($response);
        $json = json_decode($response,true);
        curl_close($ch);	         
        
@@ -47,7 +48,7 @@ class collectData {
                             'vat' => $value['vat'][0] , 
                             'link' =>   $personsUrl.$value['vat'][0].'/basic'
                            );
-                       print_r($newdata);
+                       #print_r($newdata);
                   }
                   $arrayElements = count($Results);
                   if  ($arrayElements <= 1000 && isset($newdata)){
