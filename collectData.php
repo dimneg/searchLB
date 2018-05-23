@@ -2,13 +2,13 @@
 
 
 class collectData {
-   function getAll($solrPath,$solrCore,$field, $varKeyword,$personsUrl){
+   function getAll($solrPath,$solrCore,$field, $varKeyword,$operand,$personsUrl){
        #global $Limit;
        #$this->prepareResults($DbPath,"elod_diaugeia_hybrids","buyerVatIdOrName","by_buyerDtls_VatIdOrName",$LuceneOperand,25,"score",$varKeyword,$couchUser,$couchPass);
        
 							
       
-       $this->prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$personsUrl );       		  
+       $this->prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$operand,$personsUrl );       		  
       
        
 	
@@ -17,12 +17,12 @@ class collectData {
  }
    
     
-   function prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$personsUrl){
+   function prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$operand,$personsUrl){
        global $Results;
        #$vat = $varKeyword;
        $ch = curl_init();
        
-       $url = $solrPath.$solrCore."/select?indent=on&q=".$field.":".$varKeyword."&wt=json";
+       $url = $solrPath.$solrCore."/select?indent=on&q=".$field.":".$varKeyword.$operand."&wt=json";
        $url = str_replace(' ','%20',$url);
        echo $url.PHP_EOL;
        curl_setopt($ch, CURLOPT_URL, $url);
