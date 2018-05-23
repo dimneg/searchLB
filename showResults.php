@@ -15,7 +15,7 @@ class showResults {
     function presentResults($solrPath){ //test 090166291
         require_once 'collectData.php';
         global $Results;
-        
+        print_r($Results);
         #$this->saveCsvCloud($Results, '/var/log/results.csv');
        
         #$source = ' ';
@@ -74,10 +74,10 @@ class showResults {
                 #if ($uniqueResults[$i]['corporate_id'] !==''){
                   #  echo " <font class='dataset' color='#006621' style='font-size: 0.77em'>$corporation</font></br> ";
                 #}
-                if (!empty($uniqueResults[$i]['altNames'])) {
-                     echo 'Eμφανίζεται και ως: '.$uniqueResults[$i]['altNames']."</br>";
+                #if (!empty($uniqueResults[$i]['altNames'])) {
+                 #    echo 'Eμφανίζεται και ως: '.$uniqueResults[$i]['altNames']."</br>";
                      
-                }
+                #}
                  //....basic view 2...\\
                 echo '<I>';
                 echo $this->hide_not_avail($uniqueResults[$i]['address']);
