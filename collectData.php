@@ -35,6 +35,7 @@ class collectData {
          ));
        
        $response = curl_exec($ch); 
+       print_r($response);
        $json = json_decode($response,true);
        curl_close($ch);	         
        
