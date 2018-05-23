@@ -46,13 +46,14 @@ class collectData {
                             'vat' => $value['vat'][0] , 
                             'link' =>   $personsUrl.$value['vat'][0].'/basic'
                            );
+                       print_r($newdata);
                   }
                   $arrayElements = count($Results);
                   if  ($arrayElements <= 1000 && isset($newdata)){
                       $key = $this->searchForId($newdata['vat'], $Results,'vat');
-                     # if ($key === NULL){
+                      if ($key === NULL){
                           $Results[] = $newdata;      //insert whole record
-                      #}
+                      }
                       
                   }
                  
