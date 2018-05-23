@@ -24,7 +24,7 @@ class collectData {
        
        $url = $solrPath.$solrCore."/select?indent=on&q=".$field.":".$varKeyword.$operand."&wt=json";
        $url = str_replace(' ','%20',$url);
-       echo $url.PHP_EOL;
+       #echo $url.PHP_EOL;
        curl_setopt($ch, CURLOPT_URL, $url);
        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -50,9 +50,9 @@ class collectData {
                   $arrayElements = count($Results);
                   if  ($arrayElements <= 1000 && isset($newdata)){
                       $key = $this->searchForId($newdata['vat'], $Results,'vat');
-                      if ($key === NULL){
+                     # if ($key === NULL){
                           $Results[] = $newdata;      //insert whole record
-                      }
+                      #}
                       
                   }
                  
