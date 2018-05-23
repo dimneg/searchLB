@@ -23,6 +23,7 @@ class collectData {
        $ch = curl_init();
        
        $url = $solrPath.$solrCore."/select?indent=on&q=".$field.":".$varKeyword.$operand."&wt=json";
+       $url =  urldecode($url);
        $url = str_replace(' ','%20',$url);
        $url = str_replace('%','%25',$url);
        #echo $url.PHP_EOL;
