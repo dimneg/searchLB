@@ -4,13 +4,13 @@ include 'config.php';
 $time_pre = microtime(true);
 $counter = 1;
 
-$dateUpdate = '2018-05-23';
+$dateUpdate = '1900-01-01';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
-$ch = curl_init("http://83.212.86.164:8983/solr/".personsSolrCore."/update?wt=json");
+$ch = curl_init("http://83.212.86.164:8983/solr/".FRSolrCore."/update?wt=json");
 
-$sql = "SELECT * FROM PersonalData where isGsisCompany = 0  and issueddate > '$dateUpdate'  ";
+$sql = "SELECT * FROM Main where orgtype = 'FR'  and issueddate > '$dateUpdate'  limit 60000 offset 40000";
 
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
@@ -19,12 +19,18 @@ if ($result->num_rows > 0) {
             "add" => array( 
                 "doc" => array(
                     "id"   => $row['id'],
-                    "vat"   => $row['vatNumber'],
-                    "adt" => $row['adt'],
-                    "address" => isset($row['address']) ? $row['address'] : '',
-                    'postcode'=>isset($row['postcode']) ? $row['postcode'] : '',
-                    'city'=>isset($row['city']) ? $row['city'] : '',
+                    "vat"   => $row['vatId'],     
+                    "gemhNumber"   => $row['gemhnumber'],     
+                    "orgType"   =>isset($row['orgType']) ? $row['orgType'] : '',
+                    "address" => isset($row['street']) ? $row['street'] : '',
+                    'postcode'=>isset($row['postalCode']) ? $row['postalCode'] : '',
+                    'city'=>isset($row['locality']) ? $row['locality'] : '',
                     'name'=>isset($row['name']) ? $row['name'] : '',
+                    'brandname'=>isset($row['brandname']) ? $row['brandname'] : '',
+                    'status'=>isset($row['status']) ? $row['status'] : '',
+                    'chamber'=>isset($row['chamber']) ? $row['chamber'] : '',
+                    'gemhdate'=>isset($row['gemhdate']) ? $row['gemhdate'] : '',
+                    'registrationDate'=>isset($row['registrationDate']) ? $row['registrationDate'] : '',
                     'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',
                 ),
                 "commitWithin" => 1000,
@@ -61,7 +67,7 @@ echo '(In '.number_format($exec_time/60,2).' mins)'.PHP_EOL ;
 
 ################# create core
 # cd /opt/solr
-# sudo -u solr ./bin/solr create -c LbPersons
+# sudo -u solr ./bin/solr create -c LbFr
 
 ############### delete all json from core
 # sudo curl "http://127.0.0.1:8983/solr/LbPersons/update?commit=true" -H "Content-Type: text/xml" --data-binary '<delete><query>*:*</query></delete>'
