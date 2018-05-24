@@ -4,13 +4,14 @@ include 'config.php';
 $time_pre = microtime(true);
 $counter = 1;
 
-$dateUpdate = '2018-05-24';
+$dateUpdate = '1900-01-01';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
-$ch = curl_init("http://83.212.86.164:8983/solr/".FRSolrCore."/update?wt=json");
+$ch = curl_init("http://83.212.86.164:8983/solr/".companiesSolrCore."/update?wt=json");
 
-$sql = "SELECT * FROM Main where orgtype = 'FR'  and issueddate > '$dateUpdate'  limit 2 offset 0";
+#$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate > '$dateUpdate'  limit 10000 offset 10000";
+$sql = "SELECT * FROM Main where orgtype <> 'FR' or orgtype is null limit 30000 offset 20000";
 
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
@@ -67,7 +68,7 @@ echo '(In '.number_format($exec_time/60,2).' mins)'.PHP_EOL ;
 
 ################# create core
 # cd /opt/solr
-# sudo -u solr ./bin/solr create -c LbFr
+# sudo -u solr ./bin/solr create -c LbCompanies
 
 ############### delete all json from core
 # sudo curl "http://127.0.0.1:8983/solr/LbPersons/update?commit=true" -H "Content-Type: text/xml" --data-binary '<delete><query>*:*</query></delete>'
