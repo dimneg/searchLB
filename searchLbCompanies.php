@@ -1,10 +1,6 @@
 <?php
 
-$search_in_area = '';
-$search_in_amount = '';
-$crf1 = '';
-$crf2 = '';
-$crf3 = '';
+
 ?>
 <html> 
     <header>   
@@ -317,7 +313,7 @@ $crf3 = '';
 
     </style>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-      <title>Search LB Persons</title>
+      <title>Search LB Companies</title>
    
        
             
@@ -419,11 +415,13 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
     $search = new collectData();
     if (is_numeric($varKeyword)){ //probaby afm
         if (strlen(utf8_decode($varKeyword)) ==9 ) {
-             $search->getAll(solrPath,companiesSolrCore,'vat', $varKeyword,'',companiesUrl);	
+             $search->getAll(solrPath,companiesSolrCore,'vat', $varKeyword,'',companiesUrl);
+             $search->getAll(solrPath,FRSolrCore,'vat', $varKeyword,'',companiesUrl);	
         }
         else {
             if (strlen(utf8_decode($varKeyword)) == 12 ) {
                  $search->getAll(solrPath,companiesSolrCore,'gemhNumber', $varKeyword,'',companiesUrl);	
+                  $search->getAll(solrPath,FRSolrCore,'gemhNumber', $varKeyword,'',companiesUrl);	
             }
         }
              
@@ -434,6 +432,7 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
     }
     else {
       $search->getAll(solrPath,companiesSolrCore,'name', $varKeyword,'*',companiesUrl);	
+      $search->getAll(solrPath,FRSolrCore,'name', $varKeyword,'*',companiesUrl);	
     }
     $resultsPresentation = new showResults();
     

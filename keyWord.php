@@ -184,7 +184,9 @@ return $translated;
    
    function prepareKeyword($word){
     $word= rtrim(ltrim(str_replace('ς','σ', $word)));
-    $word = str_replace('ά','α',$word);
+    $word=mb_convert_case($word, MB_CASE_UPPER, "UTF-8");
+    $word= $this->unAccent($word);
+    /*$word = str_replace('ά','α',$word);
     $word = str_replace('έ','ε',$word);
     $word = str_replace('ή','η',$word);
     $word = str_replace('ί','ι',$word);
@@ -200,7 +202,7 @@ return $translated;
     $word = str_replace(' ||',' ',$word);
     $word = str_replace('|| ',' ',$word);
     $word = str_replace(',,',' ',$word);
-    $word = str_replace(',',' ',$word);
+    $word = str_replace(',',' ',$word);*/
     return $word;
     }
     
