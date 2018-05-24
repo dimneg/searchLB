@@ -50,7 +50,7 @@ class collectData {
                             'vat' => $value['vat'][0] , 
                             'chamber' => (isset($value['chamber'][0])) ? $value['chamber'][0] : null ,  
                             'gemhDate' => (isset($value['gemhDate'][0])) ? $value['GemhDate'][0] : null ,                            
-                            'link' =>   $lbUrl.$value['vat'][0].'/basic'
+                            'link' =>   $lbUrl.$value['vat'][0].'/basic?s=1'
                            );
                        #print_r($newdata);
                   }
