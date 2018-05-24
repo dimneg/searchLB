@@ -1,10 +1,6 @@
 <?php
 
-$search_in_area = '';
-$search_in_amount = '';
-$crf1 = '';
-$crf2 = '';
-$crf3 = '';
+
 ?>
 <html> 
     <header>   
@@ -412,6 +408,7 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
     }
     else {
         $varKeyword = rtrim(ltrim($varKeyword));  
+        $varKeyword = $newKeyWord->prepareKeyword($varKeyword) ;   
     }
     $words = explode(' ', $varKeyword);  
 

@@ -408,6 +408,7 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
     }
     else {
         $varKeyword = rtrim(ltrim($varKeyword));  
+        $varKeyword = $newKeyWord->prepareKeyword($varKeyword) ;   
     }
     $words = explode(' ', $varKeyword);  
 
