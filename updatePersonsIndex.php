@@ -10,7 +10,7 @@ mysqli_set_charset($connGemh,"utf8");
 
 $ch = curl_init("http://83.212.86.164:8983/solr/".personsSolrCore."/update?wt=json");
 
-$sql = "SELECT * FROM PersonalData where isGsisCompany = 0  and issueddate > '$dateUpdate'  ";
+$sql = "SELECT * FROM PersonalData where isGsisCompany = 0  and issueddate >= '$dateUpdate'  ";
 
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
