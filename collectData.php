@@ -17,16 +17,16 @@ class collectData {
  }
    
     
-   function prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$operand,$personsUrl){
+   function prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$operand,$lbUrl){
        global $Results;
        #$vat = $varKeyword;
        $ch = curl_init();
        
        $url = $solrPath.$solrCore."/select?indent=on&q=".$field.":".urlencode($varKeyword.$operand)."&wt=json";
        #$url = urlencode($url);
-       $url = str_replace(' ','%20',$url);
+       #$url = str_replace(' ','%20',$url);
        #$url = str_replace('%','%25',$url);
-       #echo $url.PHP_EOL;
+       echo $url.PHP_EOL;
        curl_setopt($ch, CURLOPT_URL, $url);
        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -45,9 +45,12 @@ class collectData {
              foreach ($json['response']['docs'] as $key => $value) {
                   if (isset ($json['response']['docs'][0])) { //and more conditions
                        $newdata =  array (
-                            'name' => (isset($value['name'][0])) ? $value['name'][0] : null ,     
+                            'name' => (isset($value['name'][0])) ? $value['name'][0] : null ,   
+                            'gemhNumber' => (isset($value['gemhNumber'][0])) ? $value['gemhNumber'][0] : null ,    
                             'vat' => $value['vat'][0] , 
-                            'link' =>   $personsUrl.$value['vat'][0].'/basic'
+                            'chamber' => (isset($value['chamber'][0])) ? $value['chamber'][0] : null ,  
+                            'gemhDate' => (isset($value['gemhDate'][0])) ? $value['GemhDate'][0] : null ,                            
+                            'link' =>   $lbUrl.$value['vat'][0].'/basic'
                            );
                        #print_r($newdata);
                   }

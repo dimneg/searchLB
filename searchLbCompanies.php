@@ -418,8 +418,14 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
  #read all data
     $search = new collectData();
     if (is_numeric($varKeyword)){ //probaby afm
-       # if (strlen(utf8_decode($varKeyword)) <=6 ) {
+        if (strlen(utf8_decode($varKeyword)) ==9 ) {
              $search->getAll(solrPath,companiesSolrCore,'vat', $varKeyword,'',companiesUrl);	
+        }
+        else {
+            if (strlen(utf8_decode($varKeyword)) == 12 ) {
+                 $search->getAll(solrPath,companiesSolrCore,'gemhNumber', $varKeyword,'',companiesUrl);	
+            }
+        }
              
         #}
         #else {
