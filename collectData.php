@@ -735,4 +735,15 @@ class collectData {
        }
        return $country;
    }
+   
+   function unaccent($string) {    
+        $string =  str_replace('Ά','Α',$string);
+        $string =  str_replace('Έ','Ε',$string);
+        $string =  str_replace('Ί','Ι',$string);
+        $string =  str_replace('Ή','Η',$string);
+        $string =  str_replace('Ύ','Υ',$string);
+        $string =  str_replace('Ό','Ο',$string);
+        $string =  str_replace('Ώ','Ω',$string);
+        return $string;
+   }
 }
