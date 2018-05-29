@@ -9,11 +9,11 @@ $dateUpdate = '1900-01-01';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
-$core = companiesSolrCore;
- $ch = curl_init("http://83.212.86.164:8983/solr/".$core."/update?wt=json");
+$db = FRcouchDB;
+$ch = curl_init();
 
 #$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate >= '$dateUpdate'  limit 10000 offset 10000";
-$sql = "SELECT * FROM Main where orgtype <> 'FR' or orgtype is null  limit 50000 offset 400000";
+$sql = "SELECT * FROM Main where orgtype = 'FR'  limit 2 offset 0";
 
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
@@ -34,9 +34,9 @@ if ($result->num_rows > 0) {
          }
           echo $row['orgType'].' '.$id;
        # $ch = curl_init("http://83.212.86.164:8983/solr/".$core."/update?wt=json");
-         $data = array(
-            "add" => array( 
-                "doc" => array(
+         
+      
+                 $arr = array(
                     "id"   => $id,
                     "vat"   => $row['vatId'],     
                     "gemhNumber"   => $row['gemhnumber'],     
@@ -52,24 +52,32 @@ if ($result->num_rows > 0) {
                     'gemhdate'=>isset($row['gemhdate']) ? $row['gemhdate'] : '',
                     'registrationDate'=>isset($row['registrationDate']) ? $row['registrationDate'] : '',
                     'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',
-                    'correctVat'=>isset($row['correctVat']) ? $row['correctVat'] : '',
-                ),
-                "commitWithin" => 1000,
-            ),
+                    'indexeddate'=>date("Y-m-d"),
+                    'correctVat'=>isset($row['correctVat']) ? $row['correctVat'] : ''
+               
          );
          
          #$id = $row['gemhnumber'];
          $counter++; 
          
-         $data_string = json_encode($data);
+         $file_contents=json_encode($arr,JSON_UNESCAPED_UNICODE);
 
-         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-         curl_setopt($ch, CURLOPT_POST, TRUE);
-         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+         curl_setopt($ch, CURLOPT_URL, 'localhost:5984/'.$db.'/'.$id);
+         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT'); /* or PUT */
+         curl_setopt($ch, CURLOPT_POSTFIELDS, $file_contents);
+         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+         curl_setopt($ch, CURLOPT_USERPWD, 'dimneg:dim1978');
+         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                        'Content-type: application/json',
+                        'Accept: */*'
+         ));
+        $response = curl_exec($ch); 
+        echo $counter.'-'.$data[0].PHP_EOL;
+        echo $response.PHP_EOL;
+        $counter++;
 
-         $response = curl_exec($ch);
-         print_r( $response); 
+         
+        #print_r( $response); 
         # curl_close($ch);
         
      }

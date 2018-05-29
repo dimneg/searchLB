@@ -9,9 +9,13 @@ $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
 $ch = curl_init("http://83.212.86.164:8983/solr/".personsSolrCore."/update?wt=json");
-echo "http://83.212.86.164:8983/solr/".personsSolrCore."/update?wt=json";
 
-$sql = "SELECT * FROM PersonalData where isGsisCompany = 0  and issueddate >= '$dateUpdate'  limit 20 ";
+$sql = "SELECT pd.id, pd.vatNumber,pd.name,pd.address,pd.city, pd.postcode, pd.adt,pd.issueddate, m.vatId,m.name as companyName FROM PersonalData pd
+ join OwnershipData o
+ on o.personId = pd.id
+ join Main m 
+ on o.gemhNumber = m.gemhNumber
+   and issueddate >= '$dateUpdate'  ";
 
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
@@ -27,6 +31,7 @@ if ($result->num_rows > 0) {
                     'city'=>isset($row['city']) ? $row['city'] : '',
                     'name'=>isset($row['name']) ? $row['name'] : '',
                     'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',
+                    'companyVat'=>''
                 ),
                 "commitWithin" => 1000,
             ),
@@ -62,13 +67,10 @@ echo '(In '.number_format($exec_time/60,2).' mins)'.PHP_EOL ;
 
 ################# create core
 # cd /opt/solr
-# sudo -u solr ./bin/solr create -c LbPersons_v2
+# sudo -u solr ./bin/solr create -c LbPersons
 
 ############### delete all json from core
-# sudo curl "http://127.0.0.1:8983/solr/LbPersons_v2/update?commit=true" -H "Content-Type: text/xml" --data-binary '<delete><query>*:*</query></delete>'
-
-######delete core
-# sudo curl "http://127.0.0.1:8983/solr/admin/cores?action=UNLOAD&core=LbPersons_v2&deleteInstanceDir=true" 
+# sudo curl "http://127.0.0.1:8983/solr/LbPersons/update?commit=true" -H "Content-Type: text/xml" --data-binary '<delete><query>*:*</query></delete>'
 
 
 
