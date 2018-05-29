@@ -116,7 +116,7 @@ class collectData {
                 if (isset ($json['rows'])  ){ //rules to show or hide results
                     $newdata =  array (
                         'db' => $db,
-                        'name' => (isset($r['fields']['term'][1])) ? $r['fields']['term'][1] : null ,            
+                        'name' => (isset($r['fields']['name'][1])) ? $r['fields']['term'][1] : null ,            
                         'vat' => $r['fields']['term'][0],
                         'gemhNumber' => (isset($r['fields']['gemhNumber'])) ?$r['fields']['gemhNumber'] : null , 
                         'chamber' => (isset($r['fields']['chamber'])) ? $r['fields']['chamber'] : null ,  
