@@ -119,7 +119,7 @@ class collectData {
                         'name' => (isset($r['fields']['term'][1])) ? $r['fields']['term'][1] : null ,            
                         'vat' => $r['fields']['term'][0],
                         'gemhNumber' => (isset($r['fields']['gemhNumber'])) ?$r['fields']['gemhNumber'] : null , 
-                        'chamber' => (isset($r['fields']['chamber'][0])) ? $r['fields']['chamber'][0] : null ,  
+                        'chamber' => (isset($r['fields']['chamber'])) ? $r['fields']['chamber'] : null ,  
                         'gemhDate' => (isset($r['fields']['gemhDate'])) ? $r['fields']['GemhDate'] : null ,  
                         'address'=>(isset($r['fields']['address']) ) ? $r['fields']['address'] : null ,
                         'pc'=>(isset($r['fields']['pc']) ) ? $r['fields']['pc'] : null ,   
