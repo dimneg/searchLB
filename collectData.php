@@ -115,7 +115,7 @@ class collectData {
                 
                 if (isset ($json['rows'])  ){ //rules to show or hide results
                     $newdata =  array (
-                        'db' => $db,
+                        'db' => $Db,
                         'name' => (isset($r['fields']['name'][1])) ? $r['fields']['term'][1] : null ,            
                         'vat' => $r['fields']['term'][0],
                         'gemhNumber' => (isset($r['fields']['gemhNumber'])) ?$r['fields']['gemhNumber'] : null , 
@@ -130,6 +130,7 @@ class collectData {
                     );
                    
                 }
+                $arrayElements = count($Results);
                 if  ($arrayElements <= 1000 && isset($newdata)){
                       $key = $this->searchForId($newdata['vat'], $Results,'vat');
                       if ($key === NULL){

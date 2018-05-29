@@ -428,6 +428,9 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
                  # $search->getAll(solrPath,FRSolrCore,'gemhNumber', $varKeyword,'',companiesUrl);	
                 $search->getAllCompaniesCouch(DbPath, FRcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'gemhnumber');  
             }
+            else {
+               # $search->getAllCompaniesCouch(DbPath, FRcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'gemhnumber');  
+            }
         }
              
         #}
@@ -435,7 +438,8 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
          #   $search->getAllShort(solrPath,personsSolrCore,$varKeyword );	
         #}
     }
-    else {
+    else { //name
+        $search->getAllCompaniesCouch(DbPath, FRcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'name');  
       #$search->getAll(solrPath,companiesSolrCore,'name', $varKeyword,'*',companiesUrl);	
       #$search->getAll(solrPath,FRSolrCore,'name', $varKeyword,'*',companiesUrl);	
     }
