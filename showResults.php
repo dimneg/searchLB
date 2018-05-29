@@ -97,6 +97,7 @@ class showResults {
                    
                    
                 if ($uniqueResults[$i]['db'] === 'lb_fr' || $uniqueResults[$i]['db'] === 'lb_companies' || $uniqueResults[$i]['db'] === 'lb_no_gemh' ){
+                   echo 'Τύπος: '.$this->hide_not_avail($uniqueResults[$i]['orgType']);	
                     echo 'Αρ. Γ.Ε.Μ.Η.: '.$this->hide_not_avail($uniqueResults[$i]['gemhNumber']);	
                     echo ' &nbsp Επιμελητήριο: '.$this->hide_not_avail($uniqueResults[$i]['chamber']);
                     echo  ' &nbsp [Ημ/νία: '.  $this->convertDate($uniqueResults[$i]['gemhDate']).']</br>';	
