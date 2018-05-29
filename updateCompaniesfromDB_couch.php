@@ -72,7 +72,7 @@ if ($result->num_rows > 0) {
                         'Accept: */*'
          ));
         $response = curl_exec($ch); 
-        echo $counter.'-'.$data[0].PHP_EOL;
+        echo $counter.'-'.$id.PHP_EOL;
         echo $response.PHP_EOL;
         $counter++;
 
