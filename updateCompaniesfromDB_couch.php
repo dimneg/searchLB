@@ -27,12 +27,15 @@ if ($result->num_rows > 0) {
               #echo $row['orgType'];
          }
          if ($row['correctVat']==='true'){
-             $id = $row['vatId'];
+            
+             $link = $row['vatId'];
          }
          else {
-              $id = $row['vatId'].'-'.$row['gemhnumber'];
+             # $id = $row['gemhnumber'].'-'.$row['vatId'];
+              $link = $row['vatId'].'-'.$row['gemhnumber'];
          }
-          echo $row['orgType'].' '.$id;
+          $id = $row['gemhnumber'];
+         echo $row['orgType'].' '.$id;
        # $ch = curl_init("http://83.212.86.164:8983/solr/".$core."/update?wt=json");
          
       
@@ -53,7 +56,8 @@ if ($result->num_rows > 0) {
                     'registrationDate'=>isset($row['registrationDate']) ? $row['registrationDate'] : '',
                     'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',
                     'indexeddate'=>date("Y-m-d"),
-                    'correctVat'=>isset($row['correctVat']) ? $row['correctVat'] : ''
+                    'correctVat'=>isset($row['correctVat']) ? $row['correctVat'] : '',
+                     'link'
                
          );
          
