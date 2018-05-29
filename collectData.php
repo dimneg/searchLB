@@ -16,9 +16,9 @@ class collectData {
        #
        #
  }
-   function getAllCompaniesCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass,$companiesUrl){
+   function getAllCompaniesCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass,$companiesUrl,$term){
        global $Limit;
-       $this->prepareResultsCouch($DbPath,"elod_diaugeia_hybrids","buyerVatIdOrName","by_buyerDtls_VatIdOrName",$LuceneOperand,25,"score",$varKeyword,$couchUser,$couchPass,$companiesUrl);
+       $this->prepareResultsCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,25,"score",$varKeyword,$couchUser,$couchPass,$companiesUrl,$term);
    }
     
    function prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$operand,$lbUrl){
