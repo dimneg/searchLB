@@ -67,7 +67,7 @@ if ($result->num_rows > 0) {
          $file_contents=json_encode($arr,JSON_UNESCAPED_UNICODE);
 
         # curl_setopt($ch, CURLOPT_URL, 'localhost:5984/'.$db.'/'.$id);
-          curl_setopt($ch, CURLOPT_URL, 'http://83.212.86.158:5984/'.$db.'/'.$id);
+         curl_setopt($ch, CURLOPT_URL, 'http://83.212.86.158:5984/'.$db.'/'.$id);
          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT'); /* or PUT */
          curl_setopt($ch, CURLOPT_POSTFIELDS, $file_contents);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

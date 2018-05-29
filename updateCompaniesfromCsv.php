@@ -46,7 +46,7 @@ foreach($files as $let=>$word){
                            'name'=>isset($row[5]) ? $row[5] : '',
                            'name_eng'=> $transform->transliterate($transform->unaccent(mb_convert_case($row[5], MB_CASE_UPPER, "UTF-8"))),
                            'registrationDate'=>isset($row[6]) ? $row[6] : '',
-                          'issueddate'=>isset($row[7]) ? $row[7] : ''
+                           'issueddate'=>isset($row[7]) ? $row[7] : ''
                      ),
                          "commitWithin" => 1000,
                            ),

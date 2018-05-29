@@ -15,7 +15,10 @@ class collectData {
        #
        #
  }
-   
+   function getAllCompaniesCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass){
+       global $Limit;
+       $this->prepareResultsCouch($DbPath,"elod_diaugeia_hybrids","buyerVatIdOrName","by_buyerDtls_VatIdOrName",$LuceneOperand,25,"score",$varKeyword,$couchUser,$couchPass);
+   }
     
    function prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$operand,$lbUrl){
        global $Results;
@@ -68,6 +71,59 @@ class collectData {
         }
        
    } 
+   function prepareResultsCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass, $solrPath,$solrCore,$sparqlServer,$corpSolrCore) {
+       $couchUserPwd = $couchUser.':'.$couchPass;
+       $ch = curl_init();
+       curl_setopt($ch, CURLOPT_URL, $DbPath.$Db."/_design/".$DesignDoc."/".$Index."?q=term:".$varKeyword.$Wc."&limit:".$Limit."&sort:".$Sort);
+       curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+       curl_setopt($ch, CURLOPT_USERPWD, $couchUserPwd );
+       curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                       'Content-type: application/json; charset=utf-8',
+                       'Accept: */*'
+                    ));
+
+       $response = curl_exec($ch); 
+       curl_close($ch);
+       global $prefix ; 
+       global $Results;
+       global $Lang;   
+        
+       $json = json_decode($response,true);
+       if(isset ($json['rows'])) {
+           foreach($json['rows'] as $r){     
+               global $Boost;
+                $Boost = 1.2;
+                    switch ($Wc) { //boost step 1
+                    case "";{	            
+                       $r['score'] *=$Boost;
+                       break; 
+                    }
+                    case "*"; {
+                       $r['score'] *=1;
+                        break; 
+
+                    }
+                    case "~0.75"; {
+                       $r['score'] *=1;
+                       break; 
+                    }
+                }
+                
+                if (isset ($json['rows'])  ){ //rules to show or hide results
+                    $newdata =  array (
+                        'name' => (isset($r['fields']['term'][1])) ? $r['fields']['term'][1] : null ,            
+                        'vat' => $r['fields']['term'][0],
+                        'gemhNumber' => (isset($r['fields']['gemhNumber'])) ?$r['fields']['gemhNumber'] : null , 
+                         'chamber' => (isset($r['fields']['chamber'][0])) ? $r['fields']['chamber'][0] : null ,  
+                         'gemhDate' => (isset($r['fields']['gemhDate'])) ? $r['fields']['GemhDate'] : null ,   
+                        'link' =>   $lbUrl.$r['fields']['link'].'/basic?s=1'
+                    );
+                }
+               
+           }
+       }
+   }
     
    
    function prepareResults($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass, $solrPath,$solrCore,$sparqlServer,$corpSolrCore) {
