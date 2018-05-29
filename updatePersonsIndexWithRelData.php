@@ -8,7 +8,8 @@ $dateUpdate = '2018-05-23';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
-$ch = curl_init("http://83.212.86.164:8983/solr/".personsSolrCore."/update?wt=json");
+$db = personscouchDB;
+$ch = curl_init();
 
 $sql = "SELECT pd.id, pd.vatNumber,pd.name,pd.address,pd.city, pd.postcode, pd.adt,pd.issueddate, m.vatId,m.name as companyName FROM PersonalData pd
  join OwnershipData o
