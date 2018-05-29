@@ -76,7 +76,7 @@ class collectData {
        $couchUserPwd = $couchUser.':'.$couchPass;
        $ch = curl_init();
        $url=$DbPath.$Db."/_design/".$DesignDoc."/".$Index."?q=".$term.":".$varKeyword.$Wc."&limit:".$Limit."&sort:".$Sort;
-       echo $url.PHP_EOL;
+       #echo $url.PHP_EOL;
        curl_setopt($ch, CURLOPT_URL, $url);
        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -118,10 +118,10 @@ class collectData {
                         'db' => $Db,
                         'name' => (isset($r['fields']['name'][1])) ? $r['fields']['term'][1] : null ,            
                         'vat' => $r['fields']['term'][0],
-                        'gemhNumber' => (isset($r['fields']['gemhNumber'])) ?$r['fields']['gemhNumber'] : null , 
+                        'gemhNumber' => (isset($r['fields']['gemhnumber'])) ?$r['fields']['gemhnumber'] : null , 
                         'orgType' => (isset($r['fields']['orgType'])) ?$r['fields']['orgType'] : null , 
                         'chamber' => (isset($r['fields']['chamber'])) ? $r['fields']['chamber'] : null ,  
-                        'gemhDate' => (isset($r['fields']['gemhDate'])) ? $r['fields']['GemhDate'] : null ,  
+                        'gemhDate' => (isset($r['fields']['gemhdate'])) ? $r['fields']['gemhdate'] : null ,  
                         'address'=>(isset($r['fields']['address']) ) ? $r['fields']['address'] : null ,
                         'pc'=>(isset($r['fields']['pc']) ) ? $r['fields']['pc'] : null ,   
                         'city'=>(isset($r['fields']['city']) ) ? $r['fields']['city'] : null ,
