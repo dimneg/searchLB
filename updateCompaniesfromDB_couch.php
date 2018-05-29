@@ -13,7 +13,7 @@ $db = FRcouchDB;
 $ch = curl_init();
 
 #$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate >= '$dateUpdate'  limit 10000 offset 10000";
-$sql = "SELECT * FROM Main where orgtype = 'FR'  limit 50000 offset 50000";
+$sql = "SELECT * FROM Main where orgtype = 'FR'  limit 50000 offset 0";
 
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
