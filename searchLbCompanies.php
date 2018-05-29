@@ -418,6 +418,9 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
         if (strlen(utf8_decode($varKeyword)) ==9 ) {
              #$search->getAll(solrPath,companiesSolrCore,'vat', $varKeyword,'',companiesUrl);
              #$search->getAll(solrPath,FRSolrCore,'vat', $varKeyword,'',companiesUrl);	
+             $search->getAllCompaniesCouch(DbPath, companiescouchDB ,'buyerVatIdOrName','by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl); 
+             $search->getAllCompaniesCouch(DbPath, FRcouchDB , $DesignDoc, $Index, $Wc, $Limit, $Sort, $varKeyword, $couchUser, $couchPass,companiesUrl);            
+             $search->getAllCompaniesCouch(DbPath, nonGemhcouchDB , $DesignDoc, $Index, $Wc, $Limit, $Sort, $varKeyword, $couchUser, $couchPass,companiesUrl);
         }
         else {
             if (strlen(utf8_decode($varKeyword)) == 12 ) {
