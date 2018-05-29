@@ -13,7 +13,7 @@ $db = FRcouchDB;
 $ch = curl_init();
 
 #$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate >= '$dateUpdate'  limit 10000 offset 10000";
-$sql = "SELECT * FROM Main where orgtype = 'FR'  limit 2 offset 0";
+$sql = "SELECT * FROM Main where orgtype = 'FR'  limit 50000 offset 50000";
 
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
@@ -62,7 +62,8 @@ if ($result->num_rows > 0) {
          
          $file_contents=json_encode($arr,JSON_UNESCAPED_UNICODE);
 
-         curl_setopt($ch, CURLOPT_URL, 'localhost:5984/'.$db.'/'.$id);
+        # curl_setopt($ch, CURLOPT_URL, 'localhost:5984/'.$db.'/'.$id);
+          curl_setopt($ch, CURLOPT_URL, 'http://83.212.86.158:5984/'.$db.'/'.$id);
          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT'); /* or PUT */
          curl_setopt($ch, CURLOPT_POSTFIELDS, $file_contents);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -84,7 +85,7 @@ if ($result->num_rows > 0) {
 }
 
       
- curl_close($ch);
+curl_close($ch);
 
 $connGemh->close();
 $time_post = microtime(true);
