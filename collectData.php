@@ -8,16 +8,17 @@ class collectData {
        
 							
       
-       $this->prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$operand,$personsUrl );       		  
+       #$this->prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$operand,$personsUrl );       
+       $this->prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$operand,$personsUrl );     
       
        
 	
        #
        #
  }
-   function getAllCompaniesCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass){
+   function getAllCompaniesCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass,$companiesUrl){
        global $Limit;
-       $this->prepareResultsCouch($DbPath,"elod_diaugeia_hybrids","buyerVatIdOrName","by_buyerDtls_VatIdOrName",$LuceneOperand,25,"score",$varKeyword,$couchUser,$couchPass);
+       $this->prepareResultsCouch($DbPath,"elod_diaugeia_hybrids","buyerVatIdOrName","by_buyerDtls_VatIdOrName",$LuceneOperand,25,"score",$varKeyword,$couchUser,$couchPass,$companiesUrl);
    }
     
    function prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$operand,$lbUrl){
@@ -71,10 +72,12 @@ class collectData {
         }
        
    } 
-   function prepareResultsCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass, $solrPath,$solrCore,$sparqlServer,$corpSolrCore) {
+   function prepareResultsCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass,$lbUrl,$term) {
        $couchUserPwd = $couchUser.':'.$couchPass;
        $ch = curl_init();
-       curl_setopt($ch, CURLOPT_URL, $DbPath.$Db."/_design/".$DesignDoc."/".$Index."?q=term:".$varKeyword.$Wc."&limit:".$Limit."&sort:".$Sort);
+       $url=$DbPath.$Db."/_design/".$DesignDoc."/".$Index."?q=".$term.":".$varKeyword.$Wc."&limit:".$Limit."&sort:".$Sort;
+       echo $url.PHP_EOL;
+       curl_setopt($ch, CURLOPT_URL, $url);
        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
        curl_setopt($ch, CURLOPT_USERPWD, $couchUserPwd );
@@ -115,11 +118,24 @@ class collectData {
                         'name' => (isset($r['fields']['term'][1])) ? $r['fields']['term'][1] : null ,            
                         'vat' => $r['fields']['term'][0],
                         'gemhNumber' => (isset($r['fields']['gemhNumber'])) ?$r['fields']['gemhNumber'] : null , 
-                         'chamber' => (isset($r['fields']['chamber'][0])) ? $r['fields']['chamber'][0] : null ,  
-                         'gemhDate' => (isset($r['fields']['gemhDate'])) ? $r['fields']['GemhDate'] : null ,   
-                        'link' =>   $lbUrl.$r['fields']['link'].'/basic?s=1'
+                        'chamber' => (isset($r['fields']['chamber'][0])) ? $r['fields']['chamber'][0] : null ,  
+                        'gemhDate' => (isset($r['fields']['gemhDate'])) ? $r['fields']['GemhDate'] : null ,  
+                        'address'=>(isset($r['fields']['address']) ) ? $r['fields']['address'] : null ,
+                        'pc'=>(isset($r['fields']['pc']) ) ? $r['fields']['pc'] : null ,   
+                        'city'=>(isset($r['fields']['city']) ) ? $r['fields']['city'] : null ,
+                        'link' =>   $lbUrl.$r['fields']['link'].'/basic?s=1',
+                        'score' =>  $r['score'],
+                        'id' => $r['id']
                     );
+                   
                 }
+                if  ($arrayElements <= 1000 && isset($newdata)){
+                      $key = $this->searchForId($newdata['vat'], $Results,'vat');
+                      if ($key === NULL){
+                          $Results[] = $newdata;      //insert whole record
+                      }
+                      
+                  }
                
            }
        }
