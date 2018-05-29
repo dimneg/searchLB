@@ -416,13 +416,13 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
     $search = new collectData();
     if (is_numeric($varKeyword)){ //probaby afm
         if (strlen(utf8_decode($varKeyword)) ==9 ) {
-             $search->getAll(solrPath,companiesSolrCore,'vat', $varKeyword,'',companiesUrl);
-             $search->getAll(solrPath,FRSolrCore,'vat', $varKeyword,'',companiesUrl);	
+             #$search->getAll(solrPath,companiesSolrCore,'vat', $varKeyword,'',companiesUrl);
+             #$search->getAll(solrPath,FRSolrCore,'vat', $varKeyword,'',companiesUrl);	
         }
         else {
             if (strlen(utf8_decode($varKeyword)) == 12 ) {
-                 $search->getAll(solrPath,companiesSolrCore,'gemhNumber', $varKeyword,'',companiesUrl);	
-                  $search->getAll(solrPath,FRSolrCore,'gemhNumber', $varKeyword,'',companiesUrl);	
+                # $search->getAll(solrPath,companiesSolrCore,'gemhNumber', $varKeyword,'',companiesUrl);	
+                 # $search->getAll(solrPath,FRSolrCore,'gemhNumber', $varKeyword,'',companiesUrl);	
             }
         }
              
@@ -432,8 +432,8 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
         #}
     }
     else {
-      $search->getAll(solrPath,companiesSolrCore,'name', $varKeyword,'*',companiesUrl);	
-      $search->getAll(solrPath,FRSolrCore,'name', $varKeyword,'*',companiesUrl);	
+      #$search->getAll(solrPath,companiesSolrCore,'name', $varKeyword,'*',companiesUrl);	
+      #$search->getAll(solrPath,FRSolrCore,'name', $varKeyword,'*',companiesUrl);	
     }
     $resultsPresentation = new showResults();
     
