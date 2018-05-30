@@ -205,11 +205,16 @@ class collectData {
                         'name' => (isset($r['fields']['name'])) ? $r['fields']['name'] : null ,            
                         'vat' =>  (isset($r['fields']['vat'])) ? $r['fields']['vat'] : null ,  
                         'adt' =>  (isset($r['fields']['adt'])) ? $r['fields']['adt'] : null ,  
-                        'isCompany' =>  (isset($r['fields']['isCompany'])) ? $r['fields']['isCompany'] : null ,                         
-                        
+                        'isCompany' =>  (isset($r['fields']['isCompany'])) ? $r['fields']['isCompany'] : null ,                      
                         'address'=>(isset($r['fields']['address']) ) ? $r['fields']['address'] : null ,
                         'pc'=>(isset($r['fields']['pc']) ) ? $r['fields']['pc'] : null ,   
                         'city'=>(isset($r['fields']['city']) ) ? $r['fields']['city'] : null ,
+                        'managementCnt'=>isset($row['managementCnt']) ? $row['managementCnt'] : '',
+                        'ownershipCnt'=>isset($row['ownershipCnt']) ? $row['ownershipCnt'] : '',
+                        's_mgmtCompanyVat'=>isset($row['s_mgmtCompanyVat']) ? $row['s_mgmtCompanyVat'] : '',
+                        's_mgmtCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : '',
+                        's_ownCompanyVat'=>isset($row['s_mgmtCompanyVat']) ? $row['s_mgmtCompanyVat'] : '',
+                        's_ownCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : '',
                         'link' =>  $intUrl.$r['fields']['link'].'/basic?s=1',
                         'score' =>  $r['score'],
                         'id' => $r['id']
