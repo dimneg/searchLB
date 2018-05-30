@@ -112,7 +112,7 @@ class showResults {
                                 $rest = $uniqueResults[$i]['managementCnt'] - 1;
                                 $restText='';
                                 if  ($rest > 0) {
-                                    $restText = ' και αλλες '.$rest;
+                                    $restText = ' και άλλες '.$rest;
                                 }
                                 $mgmtCompanyLink= 'http://dashboard.linkedbusiness.gr/gr/company/'.$uniqueResults[$i]['s_mgmtCompanyVat'].'/basic?s=1';
                                 $mgmtCompanyName=$uniqueResults[$i]['s_mgmtCompanyName'];
@@ -127,7 +127,7 @@ class showResults {
                                  $rest = $uniqueResults[$i]['ownershipCnt'] - 1;
                                  $restText ='';
                                  if  ($rest > 0) {
-                                    $restText = ' και αλλες '.$rest;
+                                    $restText = ' και άλλες '.$rest;
                                 }
                                  #echo 'Συμμετοχές: '.$this->hide_not_avail($uniqueResults[$i]['s_ownCompanyName']).$restText. '</br>';	
                                 echo 'Συμμετοχές: ';
