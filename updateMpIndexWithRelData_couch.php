@@ -10,33 +10,27 @@ $dateUpdate = '2018-05-23';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
-$db = personscouchDB;
+$db = MPcouchDB;
 $ch = curl_init();
 
-$sql = " SELECT  pd.id, pd.vatNumber,pd.name,pd.address,pd.city,  pd.postcode, pd.adt,pd.issueddate,  pd.ownershipCnt, pd.managementCnt,     m.vatId as s_ownCompanyVat,m.name as s_ownCompanyName,m2.vatId as s_mgmtCompanyVat,m2.name as s_mgmtCompanyName  FROM PersonalData pd  left join OwnershipData o  on o.personId = pd.id  left join Main m   on o.gemhNumber = m.gemhNumber  left join MemberPosition mp  on mp.personId=pd.id  left join Main m2  on mp.gemhNumber = m2.gemhNumber  group by pd.id  limit 200000 offset 0";
-  # and issueddate >= '$dateUpdate'  "
+$sql = " SELECT  mp.id,mp.name, m.vatId as s_mgmtCompanyVat, m.name as s_mgmtCompanyName from MemberPosition mp join Main m on m.gemhnumber=mp.gemhnumber where mp.personId=0 ";
+  
 echo $sql;
 
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
      while($row = $result->fetch_assoc()){
-         $id = $row['vatNumber'];
+         $id = $row['id'];
           $arr = array(
             
                     "row"   => $row['id'],
-                    "vat"   => $row['vatNumber'],
-                    "adt" => $row['adt'],
-                    "address" => isset($row['address']) ? $row['address'] : '',
-                    'postcode'=>isset($row['postcode']) ? $row['postcode'] : '',
-                    'city'=>isset($row['city']) ? $row['city'] : '',
+                   
                     'name'=>isset($row['name']) ? $row['name'] : '',
                     'name_eng'=> $transform->transliterate($transform->unaccent(mb_convert_case($row['name'], MB_CASE_UPPER, "UTF-8"))),
-                    "managementCnt"   => $row['managementCnt'],      
-                    "ownershipCnt"   => $row['ownershipCnt'],
-                    "link"   => $row['vatNumber'],
+                   
+                   
                     'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',
-                    's_ownCompanyVat'=>isset($row['s_ownCompanyVat']) ? $row['s_ownCompanyVat'] : '',
-                    's_ownCompanyName'=>isset($row['s_ownCompanyName']) ? $row['s_ownCompanyName'] : '',
+                   
                     's_mgmtCompanyVat'=>isset($row['s_mgmtCompanyVat']) ? $row['s_mgmtCompanyVat'] : '',
                     's_mgmtCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : ''
                
