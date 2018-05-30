@@ -24,8 +24,8 @@ $sql = " SELECT  pd.id, pd.vatNumber,"
         . " FROM PersonalData pd  left join OwnershipData o  on o.personId = pd.id  left join Main m  "
         . " on o.gemhNumber = m.gemhNumber  left join MemberPosition mp  on mp.personId=pd.id  left join Main m2  on mp.gemhNumber = m2.gemhNumber "
         . " left join Main m3 on m3.vatId = pd.vatNumber "
-       # . " where pd.vatNumber = '133641529' "
-        . " group by pd.id  limit 100 offset 0";
+        #. " where pd.vatNumber = '133641529' "
+        . " group by pd.id  limit 5000 offset 0";
   # and issueddate >= '$dateUpdate'  "
 echo $sql;
 
@@ -33,13 +33,13 @@ $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
      while($row = $result->fetch_assoc()){
          $id = $row['vatNumber'];
-          if ($row['personCompanyCorrectVat']==='true'){
+          if ($row['personCompanyCorrectVat']==='false'){
+              $link = $row['vatNumber'].'-'.$row['personCompanyGemhNumber'];
             
-             $link = $row['vatNumber'];
          }
          else {
              # $id = $row['gemhnumber'].'-'.$row['vatId'];
-              $link = $row['vatNumber'].'-'.$row['personCompanyGemhNumber'];
+             $link = $row['vatNumber'];
          }
          if ($row['s_mgmtCorrectVat']==='true'){
             
