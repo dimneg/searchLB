@@ -22,7 +22,7 @@ class collectData {
    }
    function getAllPersonsCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass,$Url,$term){
        global $Limit;
-       $this->prepareResultsCouchPersons($DbPath,$Db,$DesignDoc,$Index,$Wc,25,"score",$varKeyword,$couchUser,$couchPass,Url,$term);
+       $this->prepareResultsCouchPersons($DbPath,$Db,$DesignDoc,$Index,$Wc,25,"score",$varKeyword,$couchUser,$couchPass,$Url,$term);
    }
     
    function prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$operand,$lbUrl){
