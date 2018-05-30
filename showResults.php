@@ -109,7 +109,7 @@ class showResults {
                     else {
                         if ($uniqueResults[$i]['db'] === 'lb_persons'){
                             if ($uniqueResults[$i]['managementCnt']>0){
-                                $rest = managementCnt - 1;
+                                $rest = $uniqueResults[$i]['managementCnt'] - 1;
                                 $restText='';
                                 if  ($rest > 0) {
                                     $restText = ' και αλλες '.$rest;
@@ -117,8 +117,8 @@ class showResults {
                                 echo 'Διαχειριστής: '.$this->hide_not_avail($uniqueResults[$i]['s_mgmtCompanyName']).$restText .'</br>';
                             }
                              if ($uniqueResults[$i]['ownershipCnt']>0){
-                                 $rest = ownershipCnt - 1;
-                                 $restText='';
+                                 $rest = $uniqueResults[$i]['ownershipCnt'] - 1;
+                                 $restText ='';
                                  if  ($rest > 0) {
                                     $restText = ' και αλλες '.$rest;
                                 }
@@ -129,7 +129,7 @@ class showResults {
                         else {
                             if ($uniqueResults[$i]['db'] === 'lb_mp'){
                                  if ($uniqueResults[$i]['managementCnt']>0){
-                                     $rest = managementCnt - 1;
+                                      $rest = $uniqueResults[$i]['managementCnt']- 1;
                                       $restText='';
                                       if  ($rest > 0) {
                                          $restText = ' και αλλες '.$rest;
