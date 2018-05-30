@@ -215,7 +215,8 @@ class collectData {
                         's_mgmtCompanyName'=>isset($r['fields']['s_mgmtCompanyName']) ? $r['fields']['s_mgmtCompanyName'] : '',
                         's_ownCompanyVat'=>isset($r['fields']['s_ownCompanyVat']) ? $r['fields']['s_ownCompanyVat'] : '',
                         's_ownCompanyName'=>isset($r['fields']['s_ownCompanyName']) ? $r['fields']['s_ownCompanyName'] : '',
-                        'link' =>  $intUrl.$r['fields']['link'].'/basic?s=1',
+                        #'link' =>  $intUrl.$r['fields']['link'].'/basic?s=1',
+                        'link' =>  isset ($r['fields']['link']) ? $intUrl.$r['fields']['link'].'/basic?s=1' : '',
                         'score' =>  $r['score'],
                         'id' => $r['id']
                     );
