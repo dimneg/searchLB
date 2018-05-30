@@ -116,8 +116,10 @@ class showResults {
                                 }
                                 $mgmtCompanyLink= 'http://dashboard.linkedbusiness.gr/gr/company/'.$uniqueResults[$i]['s_mgmtCompanyVat'].'/basic?s=1';
                                 $mgmtCompanyName=$uniqueResults[$i]['s_mgmtCompanyName'];
-                                echo 'Διαχειριστής: '.$this->hide_not_avail($uniqueResults[$i]['s_mgmtCompanyName']).$restText .'</br>';
+                               # echo 'Διαχειριστής: '.$this->hide_not_avail($uniqueResults[$i]['s_mgmtCompanyName']).$restText .'</br>';
+                                echo 'Διαχειριστής: ';
                                 echo "<a class='nameLink' href='  $mgmtCompanyLink' target='_blank' >$mgmtCompanyName</a> ";	
+                                echo  $restText. '</br>';
                             }
                              if ($uniqueResults[$i]['ownershipCnt']>0){
                                  $ownCompanyLink= 'http://dashboard.linkedbusiness.gr/gr/company/'.$uniqueResults[$i]['s_ownCompanyVat'].'/basic?s=1';
@@ -127,8 +129,10 @@ class showResults {
                                  if  ($rest > 0) {
                                     $restText = ' και αλλες '.$rest;
                                 }
-                                 echo 'Συμμετοχές: '.$this->hide_not_avail($uniqueResults[$i]['s_ownCompanyName']).$restText. '</br>';	
-                                  echo "<a class='nameLink' href='  $ownCompanyLink' target='_blank' >$ownCompanyName</a> ";
+                                 #echo 'Συμμετοχές: '.$this->hide_not_avail($uniqueResults[$i]['s_ownCompanyName']).$restText. '</br>';	
+                                echo 'Συμμετοχές: ';
+                                echo "<a class='nameLink' href='  $ownCompanyLink' target='_blank' >$ownCompanyName</a> ";
+                                echo  $restText. '</br>';
                              }	
                             
                         }
