@@ -13,7 +13,8 @@ mysqli_set_charset($connGemh,"utf8");
 $db = MPcouchDB;
 $ch = curl_init();
 
-$sql = " SELECT  mp.id,mp.name, m.vatId as s_mgmtCompanyVat, m.name as s_mgmtCompanyName from MemberPosition mp join Main m on m.gemhnumber=mp.gemhnumber where mp.personId=0 ";
+$sql = " SELECT  mp.id, mp.name, m.vatId as s_mgmtCompanyVat,  m.correctVat as s_mgmtCorrectVat, m.name, m.gemhnumber as s_mgmtGemhNumber, m.name as s_mgmtCompanyName"
+        . " from MemberPosition mp join Main m on m.gemhnumber=mp.gemhnumber where mp.personId=0 ";
   
 echo $sql;
 
@@ -21,6 +22,15 @@ $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
      while($row = $result->fetch_assoc()){
          $id = $row['id'];
+          if ($row['s_mgmtCorrectVat']==='true'){
+            
+            $s_mgmtCompanyLink = $row['s_mgmtCompanyVat'];
+         }
+         else {
+             # $id = $row['gemhnumber'].'-'.$row['vatId'];
+              $s_mgmtCompanyLink = $row['s_mgmtCompanyVat'].'-'.$row['s_mgmtGemhNumber'];
+         }
+       
           $arr = array(
             
                     "row"   => $row['id'],
@@ -31,6 +41,7 @@ if ($result->num_rows > 0) {
                     'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',                   
                     's_mgmtCompanyVat'=>isset($row['s_mgmtCompanyVat']) ? $row['s_mgmtCompanyVat'] : '',
                     's_mgmtCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : '',
+                   's_mgmtCompanyLink'=>$s_mgmtCompanyLink,
                     #'s_ownCompanyVat'=>isset($row['s_mgmtCompanyVat']) ? $row['s_mgmtCompanyVat'] : '',
                     #'s_ownCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : ''
                
