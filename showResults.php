@@ -108,12 +108,35 @@ class showResults {
                     }
                     else {
                         if ($uniqueResults[$i]['db'] === 'lb_persons'){
-                            echo 'Διαχειριστής: '.$this->hide_not_avail($uniqueResults[$i]['s_mgmtCompanyName']).'</br>';	
-                            echo 'Συμμετοχές: '.$this->hide_not_avail($uniqueResults[$i]['s_ownCompanyName']).'</br>';;	
+                            if ($uniqueResults[$i]['managementCnt']>0){
+                                $rest = managementCnt - 1;
+                                $restText='';
+                                if  ($rest > 0) {
+                                    $restText = ' και αλλες '.$rest;
+                                }
+                                echo 'Διαχειριστής: '.$this->hide_not_avail($uniqueResults[$i]['s_mgmtCompanyName']).$restText .'</br>';
+                            }
+                             if ($uniqueResults[$i]['ownershipCnt']>0){
+                                 $rest = ownershipCnt - 1;
+                                 $restText='';
+                                 if  ($rest > 0) {
+                                    $restText = ' και αλλες '.$rest;
+                                }
+                                 echo 'Συμμετοχές: '.$this->hide_not_avail($uniqueResults[$i]['s_ownCompanyName']).$restText. '</br>';	
+                             }	
+                            
                         }
                         else {
                             if ($uniqueResults[$i]['db'] === 'lb_mp'){
-                                echo 'Διαχειριστής: '.$this->hide_not_avail($uniqueResults[$i]['s_mgmtCompanyName']);	
+                                 if ($uniqueResults[$i]['managementCnt']>0){
+                                     $rest = managementCnt - 1;
+                                      $restText='';
+                                      if  ($rest > 0) {
+                                         $restText = ' και αλλες '.$rest;
+                                      }
+                                     echo 'Διαχειριστής: '.$this->hide_not_avail($uniqueResults[$i]['s_mgmtCompanyName']).'</br>';	
+                                 }
+                                
                             }
                         }
                     }
