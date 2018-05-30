@@ -108,8 +108,8 @@ class showResults {
                     }
                     else {
                         if ($uniqueResults[$i]['db'] === 'lb_persons'){
-                            echo 'Διαχειριστής: '.$this->hide_not_avail($uniqueResults[$i]['s_mgmtCompanyName']);	
-                            echo 'Συμμετοχές: '.$this->hide_not_avail($uniqueResults[$i]['s_ownCompanyName']);	
+                            echo 'Διαχειριστής: '.$this->hide_not_avail($uniqueResults[$i]['s_mgmtCompanyName']).'</br>';	
+                            echo 'Συμμετοχές: '.$this->hide_not_avail($uniqueResults[$i]['s_ownCompanyName']).'</br>';;	
                         }
                         else {
                             if ($uniqueResults[$i]['db'] === 'lb_mp'){
