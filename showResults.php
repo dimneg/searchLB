@@ -106,6 +106,17 @@ class showResults {
                     if ($uniqueResults[$i]['db'] === 'lb_no_gemh'){
                          echo 'Τύπος: '.$this->hide_not_avail($uniqueResults[$i]['orgType']);	
                     }
+                    else {
+                        if ($uniqueResults[$i]['db'] === 'lb_persons'){
+                            echo 'Διαχειριστής: '.$this->hide_not_avail($uniqueResults[$i]['s_mgmtCompanyName']);	
+                            echo 'Συμμετοχές: '.$this->hide_not_avail($uniqueResults[$i]['s_ownCompanyName']);	
+                        }
+                        else {
+                            if ($uniqueResults[$i]['db'] === 'lb_mp'){
+                                echo 'Διαχειριστής: '.$this->hide_not_avail($uniqueResults[$i]['s_mgmtCompanyName']);	
+                            }
+                        }
+                    }
                 }
                 
                # echo ' <font class="dataset" color="#800080" style="font-size: 0.77em">Γ.Ε.Μ.Η.</font></br> '; 

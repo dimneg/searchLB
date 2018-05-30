@@ -26,13 +26,13 @@ if ($result->num_rows > 0) {
                     "row"   => $row['id'],
                    
                     'name'=>isset($row['name']) ? $row['name'] : '',
-                    'name_eng'=> $transform->transliterate($transform->unaccent(mb_convert_case($row['name'], MB_CASE_UPPER, "UTF-8"))),
+                    'name_eng'=> $transform->transliterate($transform->unaccent(mb_convert_case($row['name'], MB_CASE_UPPER, "UTF-8"))),                 
                    
-                   
-                    'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',
-                   
+                    'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',                   
                     's_mgmtCompanyVat'=>isset($row['s_mgmtCompanyVat']) ? $row['s_mgmtCompanyVat'] : '',
-                    's_mgmtCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : ''
+                    's_mgmtCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : '',
+                    's_ownCompanyVat'=>isset($row['s_mgmtCompanyVat']) ? $row['s_mgmtCompanyVat'] : '',
+                    's_ownCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : '',
                
          );
          

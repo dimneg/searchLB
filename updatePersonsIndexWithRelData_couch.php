@@ -13,7 +13,7 @@ mysqli_set_charset($connGemh,"utf8");
 $db = personscouchDB;
 $ch = curl_init();
 
-$sql = " SELECT  pd.id, pd.vatNumber,pd.name,pd.address,pd.city,  pd.postcode, pd.adt,pd.issueddate,  pd.ownershipCnt, pd.managementCnt, pd.isGsisCompany,    m.vatId as s_ownCompanyVat,m.name as s_ownCompanyName,m2.vatId as s_mgmtCompanyVat,m2.name as s_mgmtCompanyName  FROM PersonalData pd  left join OwnershipData o  on o.personId = pd.id  left join Main m   on o.gemhNumber = m.gemhNumber  left join MemberPosition mp  on mp.personId=pd.id  left join Main m2  on mp.gemhNumber = m2.gemhNumber  group by pd.id  limit 20000 offset 10000";
+$sql = " SELECT  pd.id, pd.vatNumber,pd.name,pd.address,pd.city,  pd.postcode, pd.adt,pd.issueddate,  pd.ownershipCnt, pd.managementCnt, pd.isGsisCompany,    m.vatId as s_ownCompanyVat,m.name as s_ownCompanyName,m2.vatId as s_mgmtCompanyVat,m2.name as s_mgmtCompanyName  FROM PersonalData pd  left join OwnershipData o  on o.personId = pd.id  left join Main m   on o.gemhNumber = m.gemhNumber  left join MemberPosition mp  on mp.personId=pd.id  left join Main m2  on mp.gemhNumber = m2.gemhNumber  group by pd.id  limit 100000 offset 30000";
   # and issueddate >= '$dateUpdate'  "
 echo $sql;
 
