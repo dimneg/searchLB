@@ -6,14 +6,26 @@ $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
 
-$dateUpdate = '2018-05-23';
+$dateUpdate = '2018-05-30';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
 $db = personscouchDB;
 $ch = curl_init();
 
-$sql = " SELECT  pd.id, pd.vatNumber,pd.name,pd.address,pd.city,  pd.postcode, pd.adt,pd.issueddate,  pd.ownershipCnt, pd.managementCnt, pd.isGsisCompany,    m.vatId as s_ownCompanyVat,m.name as s_ownCompanyName,m2.vatId as s_mgmtCompanyVat,m2.name as s_mgmtCompanyName  FROM PersonalData pd  left join OwnershipData o  on o.personId = pd.id  left join Main m   on o.gemhNumber = m.gemhNumber  left join MemberPosition mp  on mp.personId=pd.id  left join Main m2  on mp.gemhNumber = m2.gemhNumber  group by pd.id  limit 100000 offset 30000";
+$sql = " SELECT  pd.id, pd.vatNumber,"
+        . " pd.name,pd.address,pd.city, "
+        . " pd.postcode, pd.adt, pd.issueddate,"
+        . " pd.ownershipCnt, pd.managementCnt,"
+        . " pd.isGsisCompany,  "
+        . " m.vatId as s_ownCompanyVat,m.name as s_ownCompanyName, m.correctVat as s_ownCorrectVat, m.gemhnumber as s_ownGemhNumber, "
+        . " m2.vatId as s_mgmtCompanyVat, m2.name as s_mgmtCompanyName, m2.correctVat as s_mgmtCorrectVat, m2.gemhnumber as s_mgmtGemhNumber,  " 
+        . " m3.correctVat as personCompanyCorrectVat , m3.gemhnumber as personCompanyGemhNumber "
+        . " FROM PersonalData pd  left join OwnershipData o  on o.personId = pd.id  left join Main m  "
+        . " on o.gemhNumber = m.gemhNumber  left join MemberPosition mp  on mp.personId=pd.id  left join Main m2  on mp.gemhNumber = m2.gemhNumber "
+        . " left join Main m3 on m3.vatId = pd.vatNumber "
+       # . " where pd.vatNumber = '133641529' "
+        . " group by pd.id  limit 100 offset 0";
   # and issueddate >= '$dateUpdate'  "
 echo $sql;
 
@@ -21,6 +33,31 @@ $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
      while($row = $result->fetch_assoc()){
          $id = $row['vatNumber'];
+          if ($row['personCompanyCorrectVat']==='true'){
+            
+             $link = $row['vatNumber'];
+         }
+         else {
+             # $id = $row['gemhnumber'].'-'.$row['vatId'];
+              $link = $row['vatNumber'].'-'.$row['personCompanyGemhNumber'];
+         }
+         if ($row['s_mgmtCorrectVat']==='true'){
+            
+            $s_mgmtCompanyLink = $row['s_mgmtCompanyVat'];
+         }
+         else {
+             # $id = $row['gemhnumber'].'-'.$row['vatId'];
+              $s_mgmtCompanyLink = $row['s_mgmtCompanyVat'].'-'.$row['s_mgmtGemhNumber'];
+         }
+         if ($row['s_ownCorrectVat']==='true'){
+            
+             $s_ownCompanyLink = $row['s_ownCompanyVat'];
+         }
+         else {
+             # $id = $row['gemhnumber'].'-'.$row['vatId'];
+              $s_ownCompanyLink = $row['s_ownCompanyVat'].'-'.$row['s_ownGemhNumber'];
+         }
+         
           $arr = array(
             
                     "row"   => $row['id'],
@@ -33,13 +70,16 @@ if ($result->num_rows > 0) {
                     'name_eng'=> $transform->transliterate($transform->unaccent(mb_convert_case($row['name'], MB_CASE_UPPER, "UTF-8"))),
                     "managementCnt"   => $row['managementCnt'],      
                     "ownershipCnt"   => $row['ownershipCnt'],
-                    "link"   => $row['vatNumber'],
+                    "link"   => $link,
                     'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',
                     'isCompany'=>isset($row['isGsisCompany']) ? $row['isGsisCompany'] : '',
                     's_ownCompanyVat'=>isset($row['s_ownCompanyVat']) ? $row['s_ownCompanyVat'] : '',
+                    's_ownCompanyLink'=>$s_ownCompanyLink,
                     's_ownCompanyName'=>isset($row['s_ownCompanyName']) ? $row['s_ownCompanyName'] : '',
                     's_mgmtCompanyVat'=>isset($row['s_mgmtCompanyVat']) ? $row['s_mgmtCompanyVat'] : '',
-                    's_mgmtCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : ''
+                    's_mgmtCompanyLink'=>$s_mgmtCompanyLink,
+                    's_mgmtCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : '',
+                    'indexeddate'=>date("Y-m-d"),
                
          );
          

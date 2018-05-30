@@ -125,7 +125,7 @@ class showResults {
                                 if  ($rest > 0) {
                                     $restText = ' και άλλες '.$rest;
                                 }
-                                $mgmtCompanyLink= 'http://dashboard.linkedbusiness.gr/gr/company/'.$uniqueResults[$i]['s_mgmtCompanyVat'].'/basic?s=1';
+                                $mgmtCompanyLink= 'http://dashboard.linkedbusiness.gr/gr/company/'.$uniqueResults[$i]['s_mgmtCompanyLink'].'/basic?s=1';
                                 $mgmtCompanyName=$uniqueResults[$i]['s_mgmtCompanyName'];
                                # echo 'Διαχειριστής: '.$this->hide_not_avail($uniqueResults[$i]['s_mgmtCompanyName']).$restText .'</br>';
                                 echo 'Διαχειριστής: ';
@@ -133,7 +133,7 @@ class showResults {
                                 echo  $restText. '</br>';
                             }
                              if ($uniqueResults[$i]['ownershipCnt']>0){
-                                 $ownCompanyLink= 'http://dashboard.linkedbusiness.gr/gr/company/'.$uniqueResults[$i]['s_ownCompanyVat'].'/basic?s=1';
+                                 $ownCompanyLink= 'http://dashboard.linkedbusiness.gr/gr/company/'.$uniqueResults[$i]['s_ownCompanyLink'].'/basic?s=1';
                                  $ownCompanyName=$uniqueResults[$i]['s_ownCompanyName'];
                                  $rest = $uniqueResults[$i]['ownershipCnt'] - 1;
                                  $restText ='';
@@ -149,7 +149,7 @@ class showResults {
                         }
                         else {
                             if ($uniqueResults[$i]['db'] === 'lb_mp'){
-                                $mgmtCompanyLink= 'http://dashboard.linkedbusiness.gr/gr/company/'.$uniqueResults[$i]['s_mgmtCompanyVat'].'/basic?s=1';
+                                $mgmtCompanyLink= 'http://dashboard.linkedbusiness.gr/gr/company/'.$uniqueResults[$i]['s_mgmtCompanyLink'].'/basic?s=1';
                                 $mgmtCompanyName=$uniqueResults[$i]['s_mgmtCompanyName'];
                                 
                                 echo 'Διαχειριστής: ';
