@@ -416,14 +416,16 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
     $search = new collectData();
     if (is_numeric($varKeyword)){ //probaby afm
        # if (strlen(utf8_decode($varKeyword)) <=6 ) {
-             $search->getAll(solrPath,personsSolrCore,'vat', $varKeyword,'',personsUrl);	
+            # $search->getAll(solrPath,personsSolrCore,'vat', $varKeyword,'',personsUrl);	
+            $search->getAllPersonsCouch(DbPath, personscouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'vat'); 
         #}
         #else {
          #   $search->getAllShort(solrPath,personsSolrCore,$varKeyword );	
         #}
     }
     else {
-      $search->getAll(solrPath,personsSolrCore,'name', $varKeyword,'*',personsUrl);	
+     $search->getAllPersonsCouch(DbPath, personscouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'term'); 
+     $search->getAllPersonsCouch(DbPath, MPcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'term'); 
     }
     $resultsPresentation = new showResults();
     

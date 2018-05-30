@@ -20,6 +20,10 @@ class collectData {
        global $Limit;
        $this->prepareResultsCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,25,"score",$varKeyword,$couchUser,$couchPass,$companiesUrl,$term);
    }
+   function getAllPersonsCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass,$Url,$term){
+       global $Limit;
+       $this->prepareResultsCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,25,"score",$varKeyword,$couchUser,$couchPass,Url,$term);
+   }
     
    function prepareResultsSolr($solrPath,$solrCore,$field,$varKeyword,$operand,$lbUrl){
        global $Results;
