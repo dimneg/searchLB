@@ -415,7 +415,7 @@ class showResults {
         }
         else {
             if ($score > 1){
-               return ['Medium confidence','#1c6400']; 
+               return ['Medium confidence','#8ccc08']; 
             }
             else {
                 if ($countResults == 1 && $score == 1 ){
