@@ -15,7 +15,7 @@ class showResults {
     function presentResults($solrPath){ //test 090166291
         require_once 'collectData.php';
         global $Results;
-        #$print_r($Results);
+        $print_r($Results);
         #$this->saveCsvCloud($Results, '/var/log/results.csv');
        
         #$source = ' ';
