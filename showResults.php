@@ -54,7 +54,7 @@ class showResults {
           
            # echo 'amount:'.preg_replace('/\D/', '',$uniqueResults[$i]['tedSumofAmounts']).'class: '.$uniqueResults[$i]['amountClass'].'</br>';
             
-            if  (isset($uniqueResults[$i]['vat']) ) {    
+            if  (isset($uniqueResults[$i]['vat']) ||  $uniqueResults[$i]['db'] === 'lb_mp' ) {    
                 
                 if  (!is_numeric($uniqueResults[$i]['vat'])) { //boost step 2
                     $uniqueResults[$i]['score'] = bcmul(0.75,$uniqueResults[$i]['score'] ,4) ;
@@ -138,14 +138,11 @@ class showResults {
                         }
                         else {
                             if ($uniqueResults[$i]['db'] === 'lb_mp'){
-                                 if ($uniqueResults[$i]['managementCnt']>0){
-                                      $rest = $uniqueResults[$i]['managementCnt']- 1;
-                                      $restText='';
-                                      if  ($rest > 0) {
-                                         $restText = ' και αλλες '.$rest;
-                                      }
-                                     echo 'Διαχειριστής: '.$this->hide_not_avail($uniqueResults[$i]['s_mgmtCompanyName']).'</br>';	
-                                 }
+                                
+                                echo 'Διαχειριστής: ';
+                                echo "<a class='nameLink' href='  $mgmtCompanyLink' target='_blank' >$mgmtCompanyName</a> ";	
+                                echo '</br>';	
+                                 
                                 
                             }
                         }
