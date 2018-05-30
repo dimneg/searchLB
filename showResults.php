@@ -65,8 +65,13 @@ class showResults {
 
                 //....basic view 1...\\
                 echo "<td style=\" text-align:left; border-left: 0px solid #ccc; font-size:15px; padding-right:0px;  width:400px;\">"; 
-                      
-                echo "<a class='nameLink' href='$url' target='_blank' >$name</a> ";	
+                 if ($uniqueResults[$i]['db'] === 'lb_mp'){
+                     echo  $uniqueResults[$i]['name'] 	;
+                 }
+                 else {
+                      echo "<a class='nameLink' href='$url' target='_blank' >$name</a> ";
+                 }
+               	
                 echo ' ';
                 $scorePresentation = $this->presentConfidence($sumResults,$uniqueResults[$i]['score']);             
                 echo " <font class='dataset' color=$scorePresentation[1] style='font-size: 0.77em'>$scorePresentation[0]</font></br>";
