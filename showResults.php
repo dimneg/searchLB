@@ -138,6 +138,8 @@ class showResults {
                         }
                         else {
                             if ($uniqueResults[$i]['db'] === 'lb_mp'){
+                                $mgmtCompanyLink= 'http://dashboard.linkedbusiness.gr/gr/company/'.$uniqueResults[$i]['s_mgmtCompanyVat'].'/basic?s=1';
+                                $mgmtCompanyName=$uniqueResults[$i]['s_mgmtCompanyName'];
                                 
                                 echo 'Διαχειριστής: ';
                                 echo "<a class='nameLink' href='  $mgmtCompanyLink' target='_blank' >$mgmtCompanyName</a> ";	
