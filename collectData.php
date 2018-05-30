@@ -213,8 +213,8 @@ class collectData {
                         'ownershipCnt'=>isset($row['ownershipCnt']) ? $row['ownershipCnt'] : '',
                         's_mgmtCompanyVat'=>isset($row['s_mgmtCompanyVat']) ? $row['s_mgmtCompanyVat'] : '',
                         's_mgmtCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : '',
-                        's_ownCompanyVat'=>isset($row['s_mgmtCompanyVat']) ? $row['s_mgmtCompanyVat'] : '',
-                        's_ownCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : '',
+                        's_ownCompanyVat'=>isset($row['s_ownCompanyVat']) ? $row['s_ownCompanyVat'] : '',
+                        's_ownCompanyName'=>isset($row['s_ownCompanyName']) ? $row['s_ownCompanyName'] : '',
                         'link' =>  $intUrl.$r['fields']['link'].'/basic?s=1',
                         'score' =>  $r['score'],
                         'id' => $r['id']
