@@ -395,25 +395,25 @@ class showResults {
     
     function presentConfidence ($countResults, $score){
         if ($countResults ==1){
-            return  ['High confidence','#006621'];
+            return  ['High confidence','#1c4e00'];
         }
         if ($score > 5){
-            return ['High confidence','#006621'];
+            return ['High confidence','#1c4e00'];
         }
         else {
             if ($score > 1){
-               return ['Medium confidence','#7CFC00']; 
+               return ['Medium confidence','#1c6400']; 
             }
             else {
                 if ($countResults == 1 && $score == 1 ){
-                    return  ['High confidence','#006621'];
+                    return  ['High confidence','#1c4e00'];
                 }
                 else {
                      if ($score == 1){
-                         return ['Low confidence','#FFA500'];
+                         return ['Low confidence','#f0972a'];
                      }
                      else {
-                         return ['No confidence','#FF0000'];
+                         return ['No confidence','#f0592a'];
                      }
                 }
             }
