@@ -95,7 +95,13 @@ class showResults {
                 echo ' ';
                # echo $this->hide_not_avail_space($uniqueResults[$i]['countryName']); 
                 #echo ' ';
-                echo $this->getVatLabel($uniqueResults[$i]['vat']). $this->hide_not_avail($uniqueResults[$i]['vat']."</br>");
+                 if ($uniqueResults[$i]['db'] === 'lb_mp') {
+                     echo "</br>";
+                 }
+                 else {
+                     echo $this->getVatLabel($uniqueResults[$i]['vat']). $this->hide_not_avail($uniqueResults[$i]['vat']."</br>");
+                 }
+                
                 echo '</I>';
                 //....show diaugeia...\\
                
