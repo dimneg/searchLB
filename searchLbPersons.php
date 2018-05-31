@@ -249,6 +249,11 @@
             a.nameLink{
             font-weight: bold;
             }
+            a.companyLink{
+            font-weight: bold;
+             font-size: 80%;
+
+            }
        <!-- advanced search       -->     
             body{
 			 <!--width: 900px;-->

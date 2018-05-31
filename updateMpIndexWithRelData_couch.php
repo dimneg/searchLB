@@ -41,7 +41,7 @@ if ($result->num_rows > 0) {
                     'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',                   
                     's_mgmtCompanyVat'=>isset($row['s_mgmtCompanyVat']) ? $row['s_mgmtCompanyVat'] : '',
                     's_mgmtCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : '',
-                   's_mgmtCompanyLink'=>$s_mgmtCompanyLink,
+                    's_mgmtCompanyLink'=>$s_mgmtCompanyLink,
                     #'s_ownCompanyVat'=>isset($row['s_mgmtCompanyVat']) ? $row['s_mgmtCompanyVat'] : '',
                     #'s_ownCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : ''
                

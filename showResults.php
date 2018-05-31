@@ -129,7 +129,7 @@ class showResults {
                                 $mgmtCompanyName=$uniqueResults[$i]['s_mgmtCompanyName'];
                                # echo 'Διαχειριστής: '.$this->hide_not_avail($uniqueResults[$i]['s_mgmtCompanyName']).$restText .'</br>';
                                 echo 'Διαχειριστής: ';
-                                echo "<a class='nameLink' href='  $mgmtCompanyLink' target='_blank' >$mgmtCompanyName</a> ";	
+                                echo "<a class='companyLink' href='  $mgmtCompanyLink' target='_blank' >$mgmtCompanyName</a> ";	
                                 echo  $restText. '</br>';
                             }
                              if ($uniqueResults[$i]['ownershipCnt']>0){
@@ -142,7 +142,7 @@ class showResults {
                                 }
                                  #echo 'Συμμετοχές: '.$this->hide_not_avail($uniqueResults[$i]['s_ownCompanyName']).$restText. '</br>';	
                                 echo 'Συμμετοχές: ';
-                                echo "<a class='nameLink' href='  $ownCompanyLink' target='_blank' >$ownCompanyName</a> ";
+                                echo "<a class='companyLink' href='  $ownCompanyLink' target='_blank' >$ownCompanyName</a> ";
                                 echo  $restText. '</br>';
                              }	
                             
@@ -153,7 +153,7 @@ class showResults {
                                 $mgmtCompanyName=$uniqueResults[$i]['s_mgmtCompanyName'];
                                 
                                 echo 'Διαχειριστής: ';
-                                echo "<a class='nameLink' href='  $mgmtCompanyLink' target='_blank' >$mgmtCompanyName</a> ";	
+                                echo "<a class='companyLink' href='  $mgmtCompanyLink' target='_blank' >$mgmtCompanyName</a> ";	
                                 echo '</br>';	
                                  
                                 
