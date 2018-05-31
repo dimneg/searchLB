@@ -10,10 +10,10 @@ $dateUpdate = '2018-05-23';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
-$db = MPcouchDB;
+$db = MPcouchDB_2;
 $ch = curl_init();
 
-$sql = " SELECT  mp.id, mp.name, m.vatId as s_mgmtCompanyVat,  m.correctVat as s_mgmtCorrectVat, m.name, m.gemhnumber as s_mgmtGemhNumber, m.name as s_mgmtCompanyName"
+$sql = " SELECT  mp.id, mp.name, m.vatId as s_mgmtCompanyVat,  m.correctVat as s_mgmtCorrectVat,  m.gemhnumber as s_mgmtGemhNumber, m.name as s_mgmtCompanyName"
         . " from MemberPosition mp join Main m on m.gemhnumber=mp.gemhnumber where mp.personId=0 ";
   
 echo $sql;
