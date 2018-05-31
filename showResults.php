@@ -54,7 +54,7 @@ class showResults {
           
            # echo 'amount:'.preg_replace('/\D/', '',$uniqueResults[$i]['tedSumofAmounts']).'class: '.$uniqueResults[$i]['amountClass'].'</br>';
             
-            if  (isset($uniqueResults[$i]['vat']) ||  $uniqueResults[$i]['db'] === 'lb_mp' ) {    
+            if  (isset($uniqueResults[$i]['vat']) ||  ($uniqueResults[$i]['db'] === 'lb_mp' || $uniqueResults[$i]['db'] === 'lb_mp_2') ) {    
                 
                 if  (!is_numeric($uniqueResults[$i]['vat'])) { //boost step 2
                     $uniqueResults[$i]['score'] = bcmul(0.75,$uniqueResults[$i]['score'] ,4) ;
@@ -65,7 +65,7 @@ class showResults {
 
                 //....basic view 1...\\
                 echo "<td style=\" text-align:left; border-left: 0px solid #ccc; font-size:15px; padding-right:0px;  width:400px;\">"; 
-                 if ($uniqueResults[$i]['db'] === 'lb_mp'){
+                 if ($uniqueResults[$i]['db'] === 'lb_mp' || $uniqueResults[$i]['db'] === 'lb_mp_2'){
                      echo  $uniqueResults[$i]['name'] 	;
                  }
                  else {
