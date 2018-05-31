@@ -148,7 +148,7 @@ class showResults {
                             
                         }
                         else {
-                            if ($uniqueResults[$i]['db'] === 'lb_mp'){
+                            if ($uniqueResults[$i]['db'] === 'lb_mp' || $uniqueResults[$i]['db'] === 'lb_mp_2'){
                                 $mgmtCompanyLink= 'http://dashboard.linkedbusiness.gr/gr/company/'.$uniqueResults[$i]['s_mgmtCompanyLink'].'/basic?s=1';
                                 $mgmtCompanyName=$uniqueResults[$i]['s_mgmtCompanyName'];
                                 
