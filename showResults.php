@@ -95,7 +95,7 @@ class showResults {
                 echo ' ';
                # echo $this->hide_not_avail_space($uniqueResults[$i]['countryName']); 
                 #echo ' ';
-                 if ($uniqueResults[$i]['db'] === 'lb_mp') {
+                 if ($uniqueResults[$i]['db'] === 'lb_mp' || $uniqueResults[$i]['db'] === 'lb_mp_2') {
                      echo "</br>";
                  }
                  else {

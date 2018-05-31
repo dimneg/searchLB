@@ -226,12 +226,12 @@ class collectData {
                 }
                 $arrayElements = count($Results);
                 if  ($arrayElements <= 1000 && isset($newdata)){
-                     if ($Db=='lb_mp'){
+                     if ($Db=='lb_mp' ||$Db=='lb_mp' ){
                          $Results[] = $newdata;  
                      }
                      else {
                          $key = $this->searchForId($newdata['vat'], $Results,'vat'); 
-                         if ($key === NULL || $Db=='lb_mp'){
+                         if ($key === NULL ){
                               $Results[] = $newdata; 
                          }
                      }
