@@ -226,7 +226,7 @@ class collectData {
                 }
                 $arrayElements = count($Results);
                 if  ($arrayElements <= 1000 && isset($newdata)){
-                     if ($Db=='lb_mp' ||$Db=='lb_mp' ){
+                     if ($Db=='lb_mp' ||$Db=='lb_mp_2' ){
                          $Results[] = $newdata;  
                      }
                      else {
