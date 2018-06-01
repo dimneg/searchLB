@@ -25,7 +25,8 @@ $sql = " SELECT  pd.id, pd.vatNumber,"
         . " on o.gemhNumber = m.gemhNumber  left join MemberPosition mp  on mp.personId=pd.id  left join Main m2  on mp.gemhNumber = m2.gemhNumber "
         . " left join Main m3 on m3.vatId = pd.vatNumber "
         #. " where pd.vatNumber = '133641529' "
-        . " group by pd.id  limit 100000 offset 5000";
+        . " group by pd.id "
+        . "where pd.issueddate >= '$dateUpdate' ";
   # and issueddate >= '$dateUpdate'  "
 echo $sql;
 
