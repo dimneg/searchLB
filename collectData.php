@@ -153,15 +153,16 @@ class collectData {
        $couchUserPwd = $couchUser.':'.$couchPass;
        $ch = curl_init();
        $url=$DbPath.$Db."/_design/".$DesignDoc."/".$Index."?q=".$term.":".$varKeyword.$Wc."&limit:".$Limit."&sort:".$Sort;
-       echo $url.PHP_EOL;
-       curl_setopt($ch, CURLOPT_URL, $url);
-       curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-       curl_setopt($ch, CURLOPT_USERPWD, $couchUserPwd );
-       curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                       'Content-type: application/json; charset=utf-8',
-                       'Accept: */*'
-                    ));
+      # echo $url.PHP_EOL;
+       #curl_setopt($ch, CURLOPT_URL, $url);
+       #curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+       #curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+       #curl_setopt($ch, CURLOPT_USERPWD, $couchUserPwd );
+       #curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        #               'Content-type: application/json; charset=utf-8',
+       #                'Accept: */*'
+      #              ));
+      
         $post = [
         'query' => $url,
         'format' => 'application/sparql-results+json',
@@ -172,7 +173,7 @@ class collectData {
        curl_setopt_array($curl, array(
         CURLOPT_PORT => "5984",
         CURLOPT_URL => $url,
-        //CURLOPT_USERPWD => $username . ":" . $password,
+        CURLOPT_USERPWD =>$couchUserPwd,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => "",
         CURLOPT_MAXREDIRS => 10,
