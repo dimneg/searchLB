@@ -151,18 +151,9 @@ class collectData {
    }
    function prepareResultsCouchPost($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass,$lbUrl,$term) {
        $couchUserPwd = $couchUser.':'.$couchPass;
-      # $ch = curl_init();
+    
        $url=$DbPath.$Db."/_design/".$DesignDoc."/".$Index."?q=".$term.":".$varKeyword.$Wc."&limit:".$Limit."&sort:".$Sort;
-      # echo $url.PHP_EOL;
-       #curl_setopt($ch, CURLOPT_URL, $url);
-       #curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-       #curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-       #curl_setopt($ch, CURLOPT_USERPWD, $couchUserPwd );
-       #curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        #               'Content-type: application/json; charset=utf-8',
-       #                'Accept: */*'
-      #              ));
-      
+    
         $post = [
         'query' => $url,
         'format' => 'application/sparql-results+json',
@@ -184,7 +175,7 @@ class collectData {
       ));
       $response = curl_exec($curl);             
        #$response = curl_exec($ch); 
-       print_r($response);
+       #print_r($response);
        #curl_close($ch);
        global $prefix ; 
        global $Results;
