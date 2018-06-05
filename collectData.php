@@ -91,12 +91,14 @@ class collectData {
                     ));
 
        $response = curl_exec($ch); 
+       print_r($response);
        curl_close($ch);
        global $prefix ; 
        global $Results;
        global $Lang;   
         
        $json = json_decode($response,true);
+       
        if(isset ($json['rows'])) {
            foreach($json['rows'] as $r){     
                global $Boost;
