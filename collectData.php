@@ -18,7 +18,7 @@ class collectData {
  }
    function getAllCompaniesCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass,$companiesUrl,$term){
        global $Limit;
-       $this->prepareResultsCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,25,"score",$varKeyword,$couchUser,$couchPass,$companiesUrl,$term);
+       $this->prepareResultsCouchPost($DbPath,$Db,$DesignDoc,$Index,$Wc,25,"score",$varKeyword,$couchUser,$couchPass,$companiesUrl,$term);
    }
    function getAllPersonsCouch($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass,$Url,$term){
        global $Limit;
