@@ -149,6 +149,98 @@ class collectData {
            }
        }
    }
+   function prepareResultsCouchPost($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass,$lbUrl,$term) {
+       $couchUserPwd = $couchUser.':'.$couchPass;
+       $ch = curl_init();
+       $url=$DbPath.$Db."/_design/".$DesignDoc."/".$Index."?q=".$term.":".$varKeyword.$Wc."&limit:".$Limit."&sort:".$Sort;
+       echo $url.PHP_EOL;
+       curl_setopt($ch, CURLOPT_URL, $url);
+       curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+       curl_setopt($ch, CURLOPT_USERPWD, $couchUserPwd );
+       curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                       'Content-type: application/json; charset=utf-8',
+                       'Accept: */*'
+                    ));
+        $post = [
+        'query' => $url,
+        'format' => 'application/sparql-results+json',
+        'timeout' => '0',
+        'debug' => 'on'
+       ];
+       $curl= curl_init();
+       curl_setopt_array($curl, array(
+        CURLOPT_PORT => "5984",
+        CURLOPT_URL => $url,
+        //CURLOPT_USERPWD => $username . ":" . $password,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 600,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,        
+        CURLOPT_POST => 1,
+        CURLOPT_POSTFIELDS => $post
+      ));
+      $response = curl_exec($curl);             
+       #$response = curl_exec($ch); 
+       print_r($response);
+       curl_close($ch);
+       global $prefix ; 
+       global $Results;
+       global $Lang;   
+        
+       $json = json_decode($response,true);
+       
+       if(isset ($json['rows'])) {
+           foreach($json['rows'] as $r){     
+               global $Boost;
+                $Boost = 1.2;
+                    switch ($Wc) { //boost step 1
+                    case "";{	            
+                       $r['score'] *=$Boost;
+                       break; 
+                    }
+                    case "*"; {
+                       $r['score'] *=1;
+                        break; 
+
+                    }
+                    case "~0.75"; {
+                       $r['score'] *=1;
+                       break; 
+                    }
+                }
+                
+                if (isset ($json['rows'])  ){ //rules to show or hide results
+                    $newdata =  array (
+                        'db' => $Db,
+                        'name' => (isset($r['fields']['name'])) ? $r['fields']['name'] : null ,            
+                        'vat' => $r['fields']['term'][0],
+                        'gemhNumber' => (isset($r['fields']['gemhnumber'])) ?$r['fields']['gemhnumber'] : null , 
+                        'orgType' => (isset($r['fields']['orgType'])) ?$r['fields']['orgType'] : null , 
+                        'chamber' => (isset($r['fields']['chamber'])) ? $r['fields']['chamber'] : null ,  
+                        'gemhDate' => (isset($r['fields']['gemhdate'])) ? $r['fields']['gemhdate'] : null ,  
+                        'address'=>(isset($r['fields']['address']) ) ? $r['fields']['address'] : null ,
+                        'pc'=>(isset($r['fields']['pc']) ) ? $r['fields']['pc'] : null ,   
+                        'city'=>(isset($r['fields']['city']) ) ? $r['fields']['city'] : null ,
+                        'link' =>   $lbUrl.$r['fields']['link'].'/basic?s=1',
+                        'score' =>  $r['score'],
+                        'id' => $r['id']
+                    );
+                   
+                }
+                $arrayElements = count($Results);
+                if  ($arrayElements <= 1000 && isset($newdata)){
+                      $key = $this->searchForId($newdata['vat'], $Results,'vat');
+                      if ($key === NULL){
+                          $Results[] = $newdata;      //insert whole record
+                      }
+                      
+                  }
+               
+           }
+       }
+   }
    function prepareResultsCouchPersons($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass,$lbUrl,$term) {
        $couchUserPwd = $couchUser.':'.$couchPass;
        $ch = curl_init();
@@ -162,7 +254,7 @@ class collectData {
                        'Content-type: application/json; charset=utf-8',
                        'Accept: */*'
                     ));
-
+      
        $response = curl_exec($ch); 
        curl_close($ch);
        global $prefix ; 
