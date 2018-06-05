@@ -151,7 +151,7 @@ class collectData {
    }
    function prepareResultsCouchPost($DbPath,$Db,$DesignDoc,$Index,$Wc,$Limit,$Sort,$varKeyword,$couchUser,$couchPass,$lbUrl,$term) {
        $couchUserPwd = $couchUser.':'.$couchPass;
-       $ch = curl_init();
+      # $ch = curl_init();
        $url=$DbPath.$Db."/_design/".$DesignDoc."/".$Index."?q=".$term.":".$varKeyword.$Wc."&limit:".$Limit."&sort:".$Sort;
       # echo $url.PHP_EOL;
        #curl_setopt($ch, CURLOPT_URL, $url);
@@ -185,7 +185,7 @@ class collectData {
       $response = curl_exec($curl);             
        #$response = curl_exec($ch); 
        print_r($response);
-       curl_close($ch);
+       #curl_close($ch);
        global $prefix ; 
        global $Results;
        global $Lang;   
