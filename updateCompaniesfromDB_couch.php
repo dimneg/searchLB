@@ -28,7 +28,7 @@ $ch = curl_init();
 
 
 #$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate >= '$dateUpdate'  limit 10000 offset 10000";
-$sql = "SELECT * FROM Main where orgtype = 'FR' and issueddate >= '$dateUpdate ' limit 890 offset 110";
+$sql = "SELECT * FROM Main where orgtype = 'FR' and issueddate >= '$dateUpdate ' limit 2000 offset 1000";
 echo $sql.PHP_EOL;
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
