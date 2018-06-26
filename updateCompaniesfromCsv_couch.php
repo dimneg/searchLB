@@ -1,14 +1,23 @@
 <?php
 include 'config.php';
 include 'collectData.php';
-
+$dateUpdate = '2018-06-18';
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
-$dateUpdate = '1900-01-01';
+
 
 $ch = curl_init();
 $db = nonGemhcouchDB;
+$dir_base= "d:/temp/non_gemh/";
+ 
+ if (file_exists($dir_base."found/")) {
+     deleteDir($dir_base."found/"); //delete temp folder
+     if (!is_dir_empty($dir_base."found/")){
+         mkdir($dir_base."found/", 0777); //create temp folder for files to be updated
+     }
+         
+ }
 #$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate >= '$dateUpdate'  limit 10000 offset 10000";
 $inputPath='C:\temp/onlyGsis/';
 $files=array_diff(scandir($inputPath), array('..', '.'));
@@ -19,7 +28,7 @@ foreach($files as $let=>$word){
             if(!mb_detect_encoding($row[0] , 'utf-8', true)){
                 $row[0]  = utf8_encode($row[0]);
              }
-             $counter++; 
+             #$counter++; 
               
              
                $id = $row[0];    
@@ -28,6 +37,47 @@ foreach($files as $let=>$word){
                  
               
                echo $id .' '.$row[1].' '.$id;
+               
+                //find and delete
+                $chUpd = curl_init();
+                $urlUpd = couchPath.$db.'/'.$id;
+                echo $urlUpd.PHP_EOL;
+                curl_setopt($chUpd, CURLOPT_URL, $urlUpd); 
+                curl_setopt( $chUpd, CURLOPT_USERPWD, 'dimneg:dim1978');	
+                curl_setopt( $chUpd, CURLOPT_CUSTOMREQUEST, 'GET');		
+                curl_setopt( $chUpd, CURLOPT_RETURNTRANSFER, true);		
+                $resultUpd = curl_exec($chUpd);
+                if(!curl_errno($chUpd)){             
+                     $info = curl_getinfo($chUpd);
+                     #echo 'Took ' . $info['total_time'] . ' seconds to send a request (get) to ' . $info['url'].'<br>';
+                }
+                curl_close( $chUpd );
+                #print_r($info);
+                if ($info['http_code']===200){
+                    $destination =$dir_base."found/".str_replace('%3F', '?', $id).'.json';
+                    $file = fopen($destination, "w+");
+                    fputs($file, $resultUpd);
+                    fclose($file);
+
+                    $fdel=file_get_contents( $destination );
+                    $jsonDel=json_decode( $fdel,true);
+                    $jsonDel['_id']=str_replace('/', '%2F', $jsonDel['_id']);
+                    $jsonDel['_id'] = str_replace('?','%3F', $jsonDel['_id']);
+                    $jsonDel['_id'] = str_replace('?','%3F', $jsonDel['_id']);
+                    $urlDel=couchPath.$db.'/'.$jsonDel['_id'];	
+
+                    echo  $urlDel.' will be updated'.PHP_EOL;
+
+                    $urlrev=$urlDel.'?rev='.$jsonDel['_rev'];
+                    $chDel = curl_init();
+                    curl_setopt($chDel , CURLOPT_URL, $urlrev); 
+                    curl_setopt($chDel, CURLOPT_USERPWD, 'dimneg:dim1978');          
+                    curl_setopt($chDel, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                    curl_setopt($chDel, CURLOPT_RETURNTRANSFER, true);
+                    $resultDel = curl_exec( $chDel);
+                    curl_close($chDel);
+                }
+                
                  $arr = array(
                     "id"   => $id,
                     "vat"   => $row[0],     
@@ -98,3 +148,30 @@ echo '(In '.number_format($exec_time/60,2).' mins)'.PHP_EOL ;
 
 
 
+function deleteDir($dirPath) {
+    if (! is_dir($dirPath)) {
+        throw new InvalidArgumentException("$dirPath must be a directory");
+    }
+    if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+        $dirPath .= '/';
+    }
+    $files = glob($dirPath . '*', GLOB_MARK);
+    foreach ($files as $file) {
+        if (is_dir($file)) {
+            self::deleteDir($file);
+        } else {
+            unlink($file);
+        }
+    }
+    rmdir($dirPath);
+}
+function is_dir_empty($dir) {
+  if (!is_readable($dir)) return NULL; 
+  $handle = opendir($dir);
+  while (false !== ($entry = readdir($handle))) {
+    if ($entry != "." && $entry != "..") {
+      return FALSE;
+    }
+  }
+  return TRUE;
+} 

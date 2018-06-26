@@ -5,7 +5,7 @@ include 'collectData.php';
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
-$dateUpdate = '2018-05-29';
+$dateUpdate = '2018-06-22';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
@@ -23,7 +23,8 @@ $ch = curl_init();
  }
 
 #$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate >= '$dateUpdate'  limit 10000 offset 10000";
-$sql = "SELECT * FROM Main where orgtype <> 'FR' or orgtype is null and issueddate >= '$dateUpdate '";
+$sql = "SELECT * FROM Main where (orgtype <> 'FR' or orgtype is null) and issueddate >= '$dateUpdate '  ";
+ #$sql = "SELECT * FROM Main where (orgtype <> 'FR' or orgtype is null) and vatId= '997834472'  ";
 
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
@@ -111,7 +112,7 @@ if ($result->num_rows > 0) {
          );
          
          #$id = $row['gemhnumber'];
-         $counter++; 
+      
          
          $file_contents=json_encode($arr,JSON_UNESCAPED_UNICODE);
 
@@ -157,3 +158,30 @@ echo '(In '.number_format($exec_time/60,2).' mins)'.PHP_EOL ;
 
 
 
+function deleteDir($dirPath) {
+    if (! is_dir($dirPath)) {
+        throw new InvalidArgumentException("$dirPath must be a directory");
+    }
+    if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+        $dirPath .= '/';
+    }
+    $files = glob($dirPath . '*', GLOB_MARK);
+    foreach ($files as $file) {
+        if (is_dir($file)) {
+            self::deleteDir($file);
+        } else {
+            unlink($file);
+        }
+    }
+    rmdir($dirPath);
+}
+function is_dir_empty($dir) {
+  if (!is_readable($dir)) return NULL; 
+  $handle = opendir($dir);
+  while (false !== ($entry = readdir($handle))) {
+    if ($entry != "." && $entry != "..") {
+      return FALSE;
+    }
+  }
+  return TRUE;
+} 

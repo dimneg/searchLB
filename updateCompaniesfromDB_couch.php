@@ -5,7 +5,7 @@ include 'collectData.php';
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
-$dateUpdate = '2018-05-29';
+$dateUpdate = '2018-06-22';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
@@ -28,7 +28,7 @@ $ch = curl_init();
 
 
 #$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate >= '$dateUpdate'  limit 10000 offset 10000";
-$sql = "SELECT * FROM Main where orgtype = 'FR' and issueddate >= '$dateUpdate ' limit 2000 offset 1000";
+$sql = "SELECT * FROM Main where orgtype = 'FR' and issueddate >= '$dateUpdate ' ";
 echo $sql.PHP_EOL;
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
@@ -106,7 +106,7 @@ if ($result->num_rows > 0) {
                     'brandname'=>isset($row['brandname']) ? $row['brandname'] : '',
                     'status'=>isset($row['status']) ? $row['status'] : '',
                     'chamber'=>isset($row['chamber']) ? $row['chamber'] : '',
-                    'gemhdate'=>isset($row['gemhdate']) ? $row['gemhdate'] : '',
+                    'gemhdate'=>isset($row['gemhdate']) ? $row['gemhdate'] : '', //ημερομηνια απόδοσης ΓΕΜΗ
                     'registrationDate'=>isset($row['registrationDate']) ? $row['registrationDate'] : '',
                     'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',
                     'indexeddate'=>date("Y-m-d"),
@@ -116,7 +116,7 @@ if ($result->num_rows > 0) {
          );
          
          #$id = $row['gemhnumber'];
-         $counter++; 
+        
          
          $file_contents=json_encode($arr,JSON_UNESCAPED_UNICODE);
 

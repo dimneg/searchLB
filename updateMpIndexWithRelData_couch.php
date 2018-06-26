@@ -6,15 +6,15 @@ $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
 
-$dateUpdate = '2018-05-23';
+$dateUpdate = '2018-05-29';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
-$db = MPcouchDB_2;
+$db = MPcouchDB;
 $ch = curl_init();
 
 $sql = " SELECT  mp.id, mp.name, m.vatId as s_mgmtCompanyVat,  m.correctVat as s_mgmtCorrectVat,  m.gemhnumber as s_mgmtGemhNumber, m.name as s_mgmtCompanyName"
-        . " from MemberPosition mp join Main m on m.gemhnumber=mp.gemhnumber where mp.personId=0 limit 500000 offset  227792 ";
+        . " from MemberPosition mp join Main m on m.gemhnumber=mp.gemhnumber where mp.personId=0 limit 500000 offset  139499 ";
   
 echo $sql;
 
