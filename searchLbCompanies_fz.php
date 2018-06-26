@@ -330,7 +330,7 @@
 <p>			
  <input type="text" style="width: 580px; height: 32px;" name="formKeyword" placeholder="Αναζήτηση με ΑΦΜ & επωνυμία  σε 1.340.567 επιχειρήσεις" value="<?php if (isset($_POST['formKeyword'])) echo $_POST['formKeyword']; else echo $_GET['varKeyword'] ?>"  maxlength="70" autofocus /> 
  <!--<input type="text" style="width: 580px; height: 32px;" name="formKeyword" placeholder="ΑΦΜ ή Όνομα" value="<?php  echo $_GET['varKeyword'] ?>"  maxlength="70" autofocus /> 	-->		
-  <input type="submit"  name="formSubmit" value="searchLbCompanies.php"  style="display: none;" > 
+  <input type="submit"  name="formSubmit" value="searchLbCompanies_fz.php"  style="display: none;" > 
   
     
             
@@ -442,9 +442,20 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
         #}
     }
     else { //name
-         $search->getAllCompaniesCouch(DbPath, FRcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'term');  
-         $search->getAllCompaniesCouch(DbPath, companiescouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'term');  
-         $search->getAllCompaniesCouch(DbPath, nonGemhcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'term');  
+        if (count($words) === 1){
+             $search->getAllCompaniesCouch(DbPath, FRcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'term');  
+             $search->getAllCompaniesCouch(DbPath, companiescouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'term');  
+             $search->getAllCompaniesCouch(DbPath, nonGemhcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'term');  
+             
+        }
+        else {
+            $termsArray = $newKeyWord->prepareExactKeyword($varKeyword);
+            $exactFullKeyword = $termsArray[3];
+            $search->getAllCompaniesCouch(DbPath, FRcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $exactFullKeyword, couchUser, couchPass,companiesUrl,'term');  
+            $search->getAllCompaniesCouch(DbPath, companiescouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $exactFullKeyword, couchUser, couchPass,companiesUrl,'term');  
+            $search->getAllCompaniesCouch(DbPath, nonGemhcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $exactFullKeyword, couchUser, couchPass,companiesUrl,'term'); 
+        }
+         
       #$search->getAll(solrPath,companiesSolrCore,'name', $varKeyword,'*',companiesUrl);	
       #$search->getAll(solrPath,FRSolrCore,'name', $varKeyword,'*',companiesUrl);	
     }
