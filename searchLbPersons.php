@@ -429,9 +429,17 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
         #}
     }
     else {
-     $search->getAllPersonsCouch(DbPath, personscouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'term'); 
-     #$search->getAllPersonsCouch(DbPath, MPcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'term');
-     $search->getAllPersonsCouch(DbPath, MPcouchDB_2 , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'term'); 
+         if (count($words) === 1){
+              $search->getAllPersonsCouch(DbPath, personscouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'term');      
+              $search->getAllPersonsCouch(DbPath, MPcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'term'); 
+         }
+         else {
+             $termsArray = $newKeyWord->prepareExactKeyword($varKeyword);
+             $exactFullKeyword = $termsArray[3];
+             $search->getAllPersonsCouch(DbPath, personscouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $exactFullKeyword, couchUser, couchPass,companiesUrl,'term');      
+             $search->getAllPersonsCouch(DbPath, MPcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $exactFullKeyword, couchUser, couchPass,companiesUrl,'term'); 
+         }
+    
     }
     $resultsPresentation = new showResults();
     

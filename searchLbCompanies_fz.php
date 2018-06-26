@@ -416,30 +416,24 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
     $search = new collectData();
     if (is_numeric($varKeyword)){ //probaby afm
         if (strlen(utf8_decode($varKeyword)) ==9 ) {
-             #$search->getAll(solrPath,companiesSolrCore,'vat', $varKeyword,'',companiesUrl);
-             #$search->getAll(solrPath,FRSolrCore,'vat', $varKeyword,'',companiesUrl);	
-            # $search->getAllCompaniesCouch(DbPath, companiescouchDB ,'buyerVatIdOrName','by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl); 
+             
              $search->getAllCompaniesCouch(DbPath, FRcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'vat');    
              $search->getAllCompaniesCouch(DbPath, companiescouchDB, 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'vat');  
              $search->getAllCompaniesCouch(DbPath, nonGemhcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'vat'); 
-             #$search->getAllCompaniesCouch(DbPath, nonGemhcouchDB , $DesignDoc, $Index, $Wc, $Limit, $Sort, $varKeyword, $couchUser, $couchPass,companiesUrl);
+             
         }
         else {
             if (strlen(utf8_decode($varKeyword)) == 12 ) {
-                # $search->getAll(solrPath,companiesSolrCore,'gemhNumber', $varKeyword,'',companiesUrl);	
-                 # $search->getAll(solrPath,FRSolrCore,'gemhNumber', $varKeyword,'',companiesUrl);	
+                
                 $search->getAllCompaniesCouch(DbPath, FRcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'gemhnumber');  
                $search->getAllCompaniesCouch(DbPath,companiescouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'gemhnumber'); 
             }
             else {
-               # $search->getAllCompaniesCouch(DbPath, FRcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $varKeyword, couchUser, couchPass,companiesUrl,'gemhnumber');  
+               
             }
         }
              
-        #}
-        #else {
-         #   $search->getAllShort(solrPath,personsSolrCore,$varKeyword );	
-        #}
+       
     }
     else { //name
         if (count($words) === 1){
@@ -456,8 +450,7 @@ if ((isset($_POST['formSubmit']) && ($_POST['formSubmit'] <> "") )|| (isset($_GE
             $search->getAllCompaniesCouch(DbPath, nonGemhcouchDB , 'buyerVatIdOrName', 'by_buyerDtls_VatIdOrName', $Wc, $Limit, $Sort, $exactFullKeyword, couchUser, couchPass,companiesUrl,'term'); 
         }
          
-      #$search->getAll(solrPath,companiesSolrCore,'name', $varKeyword,'*',companiesUrl);	
-      #$search->getAll(solrPath,FRSolrCore,'name', $varKeyword,'*',companiesUrl);	
+     
     }
     $resultsPresentation = new showResults();
     
