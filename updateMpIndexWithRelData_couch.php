@@ -14,7 +14,7 @@ $db = MPcouchDB;
 $ch = curl_init();
 
 $sql = " SELECT  mp.id, mp.name, m.vatId as s_mgmtCompanyVat,  m.correctVat as s_mgmtCorrectVat,  m.gemhnumber as s_mgmtGemhNumber, m.name as s_mgmtCompanyName"
-        . " from MemberPosition mp join Main m on m.gemhnumber=mp.gemhnumber where mp.personId=0 limit 500000 offset  139499 ";
+        . " from MemberPosition mp join Main m on m.gemhnumber=mp.gemhnumber where mp.personId=0 limit 500000 offset  245545";
   
 echo $sql;
 
