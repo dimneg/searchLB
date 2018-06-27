@@ -21,7 +21,7 @@
             $(document).ready( function () {
             $('#searchResults').DataTable(
             {
-            "aaSorting": [[ 1, "desc" ]], //"aaSorting": [[ 3, "desc" ]],
+            "aaSorting": [[ 0, "desc" ]], //"aaSorting": [[ 3, "desc" ]],
                     "bJQueryUI": true,
                     "aLengthMenu": [
             [25, 50, 100, 200, -1],
