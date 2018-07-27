@@ -6,7 +6,7 @@ $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
 
-$dateUpdate = '2018-06-22';
+$dateUpdate = '2018-06-18';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
@@ -42,7 +42,7 @@ if ($result->num_rows > 0) {
                 $urlUpd = couchPath.$db.'/'.$id;
                 echo $urlUpd.PHP_EOL;
                 curl_setopt($chUpd, CURLOPT_URL, $urlUpd); 
-                curl_setopt( $chUpd, CURLOPT_USERPWD, 'dimneg:dim1978');	
+                curl_setopt( $chUpd, CURLOPT_USERPWD, 'dimneg:fujintua0)');	
                 curl_setopt( $chUpd, CURLOPT_CUSTOMREQUEST, 'GET');		
                 curl_setopt( $chUpd, CURLOPT_RETURNTRANSFER, true);		
                 $resultUpd = curl_exec($chUpd);
