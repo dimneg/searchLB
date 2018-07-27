@@ -34,7 +34,7 @@ class collectData {
        #$url = urlencode($url);
        #$url = str_replace(' ','%20',$url);
        #$url = str_replace('%','%25',$url);
-       echo $url.PHP_EOL;
+       #echo $url.PHP_EOL;
        curl_setopt($ch, CURLOPT_URL, $url);
        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -153,7 +153,7 @@ class collectData {
        $couchUserPwd = $couchUser.':'.$couchPass;
     
        $url = $DbPath.$Db."/_design/".$DesignDoc."/".$Index."?q=".$term.":".$varKeyword.$Wc."&limit:".$Limit."&sort:".$Sort;
-    
+        echo $url.PHP_EOL;
         $post = [
         'query' => $url,
         'format' => 'application/sparql-results+json',
