@@ -55,7 +55,7 @@ if ($result->num_rows > 0) {
          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT'); /* or PUT */
          curl_setopt($ch, CURLOPT_POSTFIELDS, $file_contents);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-         curl_setopt($ch, CURLOPT_USERPWD, 'dimneg:dim1978');
+         curl_setopt($ch, CURLOPT_USERPWD, 'dimneg:fujintua0)');
          curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                         'Content-type: application/json',
                         'Accept: */*'

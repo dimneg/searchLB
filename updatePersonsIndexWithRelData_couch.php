@@ -6,7 +6,7 @@ $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
 
-$dateUpdate = '2018-06-18';
+$dateUpdate = '2017-01-01';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
@@ -70,7 +70,7 @@ if ($result->num_rows > 0) {
                     $urlrev=$urlDel.'?rev='.$jsonDel['_rev'];
                     $chDel = curl_init();
                     curl_setopt($chDel , CURLOPT_URL, $urlrev); 
-                    curl_setopt($chDel, CURLOPT_USERPWD, 'dimneg:dim1978');          
+                    curl_setopt($chDel, CURLOPT_USERPWD, 'dimneg:fujintua0)');          
                     curl_setopt($chDel, CURLOPT_CUSTOMREQUEST, 'DELETE');
                     curl_setopt($chDel, CURLOPT_RETURNTRANSFER, true);
                     $resultDel = curl_exec( $chDel);
@@ -135,7 +135,7 @@ if ($result->num_rows > 0) {
          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT'); /* or PUT */
          curl_setopt($ch, CURLOPT_POSTFIELDS, $file_contents);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-         curl_setopt($ch, CURLOPT_USERPWD, 'dimneg:dim1978');
+         curl_setopt($ch, CURLOPT_USERPWD, 'dimneg:fujintua0)');
          curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                         'Content-type: application/json',
                         'Accept: */*'
