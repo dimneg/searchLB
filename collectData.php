@@ -254,6 +254,7 @@ class collectData {
        global $Lang;   
         
        $json = json_decode($response,true);
+       print_r($response);
        if(isset ($json['rows'])) {
            foreach($json['rows'] as $r){     
                global $Boost;
