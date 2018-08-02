@@ -64,6 +64,15 @@ if ($result->num_rows > 0) {
                  break;
              case 'OTHER':
              $orgtypeFront='ΚΑΔΚ';
+                 break; 
+              case 'PC':
+             $orgtypeFront='ΙΚΕ';
+                 break;
+             case 'PC/SM':
+             $orgtypeFront='Μ-ΙΚΕ';
+                 break;
+             case 'PLC':
+             $orgtypeFront='ΑΕ';
                  break;
 
              default:
