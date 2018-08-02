@@ -1,0 +1,21 @@
+
+PREFIX rov: <http://www.w3.org/ns/regorg#>
+PREFIX gr:<http://purl.org/goodrelations/v1#>
+SELECT str(?vatId) as ?vatId str(?orgTypeCode) as ?orgTypeCode str(?street) as ?street str(?pcode) as ?pcode str(?locality) as ?locality str(?name) as ?name ?regDate ?lastUpdateDate 
+FROM <http://linkedeconomy.org/GemhOrganizations>
+FROM <http://linkedeconomy.org/Taxonomies>
+WHERE {
+?org  gr:vatID ?vatId ;
+        dcterms:modified ?lastUpdateDate ; 
+        gr:name ?name .
+OPTIONAL{ ?org rov:orgType ?orgType . ?orgType skos:notation ?orgTypeCode . }
+OPTIONAL{ ?org elod:registrationDate ?regDate . }
+OPTIONAL{ ?org vcard2006:hasAddress ?address .
+          ?address vcard2006:locality ?locality ; 
+                   vcard2006:street-address ?street ;
+                   vcard2006:postal-code ?pcode .
+}
+filter not exists { ?org elod:hasGemhEntry ?gemhEntry . }
+filter (?lastUpdateDate > xsd:date("2018-07-28"))
+}
+

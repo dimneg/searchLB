@@ -1,7 +1,8 @@
 <?php
 include 'config.php';
 include 'collectData.php';
-$dateUpdate = '2018-06-18';
+$couchUserPwd = couchUser.':'.couchPass;
+$dateUpdate = '2018-07-28';
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
@@ -43,7 +44,7 @@ foreach($files as $let=>$word){
                 $urlUpd = couchPath.$db.'/'.$id;
                 echo $urlUpd.PHP_EOL;
                 curl_setopt($chUpd, CURLOPT_URL, $urlUpd); 
-                curl_setopt( $chUpd, CURLOPT_USERPWD, 'dimneg:fujintua0)');	
+                curl_setopt( $chUpd, CURLOPT_USERPWD, $couchUserPwd );	
                 curl_setopt( $chUpd, CURLOPT_CUSTOMREQUEST, 'GET');		
                 curl_setopt( $chUpd, CURLOPT_RETURNTRANSFER, true);		
                 $resultUpd = curl_exec($chUpd);
@@ -71,7 +72,7 @@ foreach($files as $let=>$word){
                     $urlrev=$urlDel.'?rev='.$jsonDel['_rev'];
                     $chDel = curl_init();
                     curl_setopt($chDel , CURLOPT_URL, $urlrev); 
-                    curl_setopt($chDel, CURLOPT_USERPWD, 'dimneg:fujintua0)');          
+                    curl_setopt($chDel, CURLOPT_USERPWD, $couchUserPwd );          
                     curl_setopt($chDel, CURLOPT_CUSTOMREQUEST, 'DELETE');
                     curl_setopt($chDel, CURLOPT_RETURNTRANSFER, true);
                     $resultDel = curl_exec( $chDel);
@@ -107,7 +108,7 @@ foreach($files as $let=>$word){
          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT'); /* or PUT */
          curl_setopt($ch, CURLOPT_POSTFIELDS, $file_contents);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-         curl_setopt($ch, CURLOPT_USERPWD, 'dimneg:fujintua0)');
+         curl_setopt($ch, CURLOPT_USERPWD, $couchUserPwd );
          curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                         'Content-type: application/json',
                         'Accept: */*'

@@ -1,12 +1,13 @@
 <?php
 include 'config.php';
 include 'collectData.php';
+$couchUserPwd = couchUser.':'.couchPass;
 
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
 
-$dateUpdate = '2017-01-01';
+$dateUpdate = '2018-07-28';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
@@ -42,7 +43,7 @@ if ($result->num_rows > 0) {
                 $urlUpd = couchPath.$db.'/'.$id;
                 echo $urlUpd.PHP_EOL;
                 curl_setopt($chUpd, CURLOPT_URL, $urlUpd); 
-                curl_setopt( $chUpd, CURLOPT_USERPWD, 'dimneg:fujintua0)');	
+                curl_setopt( $chUpd, CURLOPT_USERPWD, $couchUserPwd );	
                 curl_setopt( $chUpd, CURLOPT_CUSTOMREQUEST, 'GET');		
                 curl_setopt( $chUpd, CURLOPT_RETURNTRANSFER, true);		
                 $resultUpd = curl_exec($chUpd);
@@ -70,7 +71,7 @@ if ($result->num_rows > 0) {
                     $urlrev=$urlDel.'?rev='.$jsonDel['_rev'];
                     $chDel = curl_init();
                     curl_setopt($chDel , CURLOPT_URL, $urlrev); 
-                    curl_setopt($chDel, CURLOPT_USERPWD, 'dimneg:fujintua0)');          
+                    curl_setopt($chDel, CURLOPT_USERPWD, $couchUserPwd );          
                     curl_setopt($chDel, CURLOPT_CUSTOMREQUEST, 'DELETE');
                     curl_setopt($chDel, CURLOPT_RETURNTRANSFER, true);
                     $resultDel = curl_exec( $chDel);
@@ -135,7 +136,7 @@ if ($result->num_rows > 0) {
          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT'); /* or PUT */
          curl_setopt($ch, CURLOPT_POSTFIELDS, $file_contents);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-         curl_setopt($ch, CURLOPT_USERPWD, 'dimneg:fujintua0)');
+         curl_setopt($ch, CURLOPT_USERPWD, $couchUserPwd );
          curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                         'Content-type: application/json',
                         'Accept: */*'
