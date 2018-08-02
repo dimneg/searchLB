@@ -16,6 +16,7 @@ $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
      while($row = $result->fetch_assoc()){
          $id = str_replace('/', '_', $row['orgtype']);
+         $id = str_replace(' ', '_', $id);
          $ch = curl_init();
          $url = couchPath.$db.'/'.$id;
          echo $url.PHP_EOL;
@@ -40,6 +41,9 @@ if ($result->num_rows > 0) {
                  break;
              case 'GP':
              $orgtypeFront='ΟΕ';
+                 break;
+             case 'Inadequate Info':
+             $orgtypeFront='';
                  break;
              case 'JV':
              $orgtypeFront='Κ/Ξ';
@@ -73,6 +77,63 @@ if ($result->num_rows > 0) {
                  break;
              case 'PLC':
              $orgtypeFront='ΑΕ';
+                 break;
+             case 'PLC/ABEE':
+             $orgtypeFront='ΑΕ';
+                 break;
+              case 'PLC/ABETE':
+             $orgtypeFront='ΑΕ'; //sto site δεν εχει
+                 break;             
+             case 'PLC/AEBE':
+             $orgtypeFront='ΑΕΒΕ';
+                 break;
+             case 'PLC/ATE': //sto site δεν εχει
+             $orgtypeFront='ΑΕ';
+                 break;
+              case 'PLC/ATEE': //sto site δεν εχει
+             $orgtypeFront='ΑΕ';
+                 break;
+             case 'PLC/SM':
+             $orgtypeFront='Μ-ΑΕ';
+                 break;
+             case 'PLC/SPECIAL':
+             $orgtypeFront='ΑΕ-ΚΠΣ';
+                 break;
+             case 'PUBLIC':
+             $orgtypeFront='Δημόσιο';
+                 break;
+              case 'PUBLIC/MUNIC':
+             $orgtypeFront='Δημοτική';
+                 break;
+             case 'PUBLIC/PLE':
+             $orgtypeFront='ΝΠΔΔ';
+                 break;
+             case 'SHIP':
+             $orgtypeFront='Ναυτιλ.';
+                 break;
+             case 'ΑΤΟΜΙΚΗ': //sto site δεν εχει
+             $orgtypeFront='Ελ.Επαγγελμ.';
+                 break;
+             case 'Αστική Εταιρία 784 Α.Κ.': //sto site δεν εχει
+             $orgtypeFront='ΑΜΚΕ';
+                 break;
+              case 'ΕΝΩΣΗ ΠΡΟΣΩΠΩΝ.': //sto site δεν εχει
+             $orgtypeFront='';
+                 break;
+             case 'Ενεργειακή Κοινότητα': //sto site δεν εχει
+             $orgtypeFront='';
+                 break;
+              case 'Ευρωπαϊκή Συνεταιριστική Εταιρία (SCE)': //sto site δεν εχει
+             $orgtypeFront='';
+                 break;
+             case 'ΙΚΕ': //sto site δεν εχει
+             $orgtypeFront='ΙΚΕ';
+                 break;
+              case 'Κοινοπραξία': //sto site δεν εχει
+             $orgtypeFront='Κ/Ξ';
+                 break;
+              case 'Συνεταιρισμός': //sto site δεν εχει
+             $orgtypeFront='ΣΥΝ.';
                  break;
 
              default:
