@@ -32,6 +32,39 @@ if ($result->num_rows > 0) {
              case 'FOREIGN':
              $orgtypeFront='FOREIGN';
                  break;
+             case 'FOUNDATION':
+             $orgtypeFront='Ιδρυμα';
+                 break;
+             case 'FR':
+             $orgtypeFront='Ελ.Επαγγελμ.';
+                 break;
+             case 'GP':
+             $orgtypeFront='ΟΕ';
+                 break;
+             case 'JV':
+             $orgtypeFront='Κ/Ξ';
+                 break;
+             case 'LAWYERS':
+             $orgtypeFront='LAWYERS';
+                 break;
+             case 'LP':
+             $orgtypeFront='ΕΕ';
+                 break;
+             case 'LTD':
+             $orgtypeFront='ΕΠΕ';
+                 break;
+             case 'LTD/SM':
+             $orgtypeFront='Μ-ΕΠΕ';
+                 break;
+             case 'LTD_SPECIAL':
+             $orgtypeFront='ΕΕ ΜΗ ΦΠ ΕΠΕ';
+                 break;
+              case 'NPO':
+             $orgtypeFront='ΑΜΚΕ';
+                 break;
+             case 'OTHER':
+             $orgtypeFront='ΚΑΔΚ';
+                 break;
 
              default:
                  $orgtypeFront='';
