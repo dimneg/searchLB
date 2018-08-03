@@ -26,10 +26,10 @@ $sql = " SELECT  pd.id, pd.vatNumber,"
         . " FROM PersonalData pd  left join OwnershipData o  on o.personId = pd.id  left join Main m  "
         . " on o.gemhNumber = m.gemhNumber  left join MemberPosition mp  on mp.personId=pd.id  left join Main m2  on mp.gemhNumber = m2.gemhNumber "
         . " left join Main m3 on m3.vatId = pd.vatNumber "
-        . " where pd.issueddate >= '$dateUpdate "
-        #. " where pd.vatNumber = '133641529' "
-        . " group by pd.id "
-        . "' ";
+        . " where pd.issueddate >= $dateUpdate "
+        . " AND pd.vatNumber = '003352545' "
+        . " group by pd.id ";
+       # . "' ";
   # and issueddate >= '$dateUpdate'  "
 echo $sql;
 

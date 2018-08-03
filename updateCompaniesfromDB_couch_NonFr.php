@@ -1,11 +1,11 @@
 <?php
 include 'config.php';
 include 'collectData.php';
-
+$couchUserPwd = couchUser.':'.couchPass;
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
-$dateUpdate = '2018-07-28';
+$dateUpdate = '2018-08-02';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
@@ -23,9 +23,11 @@ $ch = curl_init();
  }
 
 #$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate >= '$dateUpdate'  limit 10000 offset 10000";
-$sql = "SELECT * FROM Main where (orgtype <> 'FR' or orgtype is null) and issueddate >= '$dateUpdate '  ";
+$sql = "SELECT m.vatId, m.gemhnumber, m.orgType, m.street, m.postalCode, m.locality, m.name, m.brandname, m.status, m.chamber, m.gemhdate, m.registrationDate, m.issueddate, m.correctVat, cl.title "
+        . "  FROM Main m  left join companyCpa cc on cc.gemhnumber = m.gemhNumber left join CpaList cl on cl.apiCpa=cc.apiCpa "
+        . "where (m.orgtype <> 'FR' or m.orgtype is null) and cc.main = 1 and m.issueddate >= '$dateUpdate ' group by m.vatId ";
  #$sql = "SELECT * FROM Main where (orgtype <> 'FR' or orgtype is null) and vatId= '997834472'  ";
-
+echo $sql;
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
      while($row = $result->fetch_assoc()){
@@ -52,7 +54,7 @@ if ($result->num_rows > 0) {
          $urlUpd = couchPath.$db.'/'.$id;
          echo $urlUpd.PHP_EOL;
          curl_setopt($chUpd, CURLOPT_URL, $urlUpd); 
-	 curl_setopt( $chUpd, CURLOPT_USERPWD, 'dimneg:fujintua0)');	
+	 curl_setopt( $chUpd, CURLOPT_USERPWD, $couchUserPwd);	
          curl_setopt( $chUpd, CURLOPT_CUSTOMREQUEST, 'GET');		
 	 curl_setopt( $chUpd, CURLOPT_RETURNTRANSFER, true);		
 	 $resultUpd = curl_exec($chUpd);
@@ -80,7 +82,7 @@ if ($result->num_rows > 0) {
              $urlrev=$urlDel.'?rev='.$jsonDel['_rev'];
              $chDel = curl_init();
              curl_setopt($chDel , CURLOPT_URL, $urlrev); 
-	     curl_setopt($chDel, CURLOPT_USERPWD, 'dimneg:fujintua0)');          
+	     curl_setopt($chDel, CURLOPT_USERPWD, $couchUserPwd);          
              curl_setopt($chDel, CURLOPT_CUSTOMREQUEST, 'DELETE');
              curl_setopt($chDel, CURLOPT_RETURNTRANSFER, true);
              $resultDel = curl_exec( $chDel);
@@ -107,6 +109,7 @@ if ($result->num_rows > 0) {
                     'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',
                     'indexeddate'=>date("Y-m-d"),
                     'correctVat'=>isset($row['correctVat']) ? $row['correctVat'] : '',
+                     'cpaTitle'=> isset($row['title']) ? $row['title'] : '',
                     'link' => $link,
                
          );
@@ -121,7 +124,7 @@ if ($result->num_rows > 0) {
          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT'); /* or PUT */
          curl_setopt($ch, CURLOPT_POSTFIELDS, $file_contents);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-         curl_setopt($ch, CURLOPT_USERPWD, 'dimneg:fujintua0)');
+         curl_setopt($ch, CURLOPT_USERPWD, $couchUserPwd);
          curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                         'Content-type: application/json',
                         'Accept: */*'
