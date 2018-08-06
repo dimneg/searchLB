@@ -1,7 +1,7 @@
 <?php
 include 'config.php';
 include 'collectData.php';
-
+$couchUserPwd = couchUser.':'.couchPass;
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
@@ -55,7 +55,7 @@ if ($result->num_rows > 0) {
          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT'); /* or PUT */
          curl_setopt($ch, CURLOPT_POSTFIELDS, $file_contents);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-         curl_setopt($ch, CURLOPT_USERPWD, 'dimneg:fujintua0)');
+         curl_setopt($ch, CURLOPT_USERPWD, $couchUserPwd );
          curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                         'Content-type: application/json',
                         'Accept: */*'

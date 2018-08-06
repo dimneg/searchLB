@@ -5,7 +5,7 @@ $couchUserPwd = couchUser.':'.couchPass;
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
-$dateUpdate = '2018-08-02';
+$dateUpdate = '2012-01-01';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
@@ -25,7 +25,7 @@ $ch = curl_init();
 #$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate >= '$dateUpdate'  limit 10000 offset 10000";
 $sql = "SELECT m.vatId, m.gemhnumber, m.orgType, m.street, m.postalCode, m.locality, m.name, m.brandname, m.status, m.chamber, m.gemhdate, m.registrationDate, m.issueddate, m.correctVat, cl.title "
         . "  FROM Main m  left join companyCpa cc on cc.gemhnumber = m.gemhNumber left join CpaList cl on cl.apiCpa=cc.apiCpa "
-        . "where (m.orgtype <> 'FR' or m.orgtype is null) and cc.main = 1 and m.issueddate >= '$dateUpdate ' group by m.vatId ";
+        . "where (m.orgtype <> 'FR' or m.orgtype is null) and cc.main = 1 and m.issueddate >= '$dateUpdate ' group by m.gemhnumber ";
  #$sql = "SELECT * FROM Main where (orgtype <> 'FR' or orgtype is null) and vatId= '997834472'  ";
 echo $sql;
 $result = $connGemh->query($sql);
