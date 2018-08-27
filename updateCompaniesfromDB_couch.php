@@ -32,7 +32,7 @@ $ch = curl_init();
  $sql = "SELECT m.vatId, m.gemhnumber, m.orgType, m.street, m.postalCode, m.locality, m.name, m.brandname, m.status, m.chamber, m.gemhdate, m.registrationDate, m.issueddate, m.correctVat, cl.title "
         . "  FROM Main m   join companyCpa cc on cc.gemhnumber = m.gemhNumber  join CpaList cl on cl.apiCpa=cc.apiCpa "
         #. "where (m.orgtype= 'FR') and cc.main = 1 and m.issueddate >= '$dateUpdate ' group by m.gemhnumber limit 1000 offset 0";
-         . "where m.orgtype= 'FR' and cc.main = 1 and m.vatId like 'b%'  group by m.gemhnumber limit 4000 offset 0";
+         . "where m.orgtype= 'FR' and cc.main = 1 and m.vatId like '0%'  group by m.gemhnumber limit 1000 offset 320000";
 echo $sql.PHP_EOL;
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
@@ -90,7 +90,7 @@ if ($result->num_rows > 0) {
              $urlrev=$urlDel.'?rev='.$jsonDel['_rev'];
              $chDel = curl_init();
              curl_setopt($chDel , CURLOPT_URL, $urlrev); 
-	     curl_setopt($chDel, CURLOPT_USERPWD, 'dimneg:fujintua0)');          
+	     curl_setopt($chDel, CURLOPT_USERPWD, $couchUserPwd);          
              curl_setopt($chDel, CURLOPT_CUSTOMREQUEST, 'DELETE');
              curl_setopt($chDel, CURLOPT_RETURNTRANSFER, true);
              $resultDel = curl_exec( $chDel);

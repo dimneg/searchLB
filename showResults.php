@@ -466,5 +466,16 @@ class showResults {
         return $class;
     }
     
+    function getBasicUrl (){
+        $Actual_link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        if (strpos($Actual_link,'83.212.86.164:81') !== false){
+            $Domain = "http://83.212.86.164:81/";
+        }
+        else {
+            $Domain = "http://83.212.86.164:81/";
+        }
+        return $Domain;
+    }
+    
     
 }
