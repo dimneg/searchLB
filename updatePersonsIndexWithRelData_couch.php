@@ -7,7 +7,7 @@ $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
 
-$dateUpdate = '2018-07-28';
+$dateUpdate = '2018-09-15';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
@@ -26,8 +26,8 @@ $sql = " SELECT  pd.id, pd.vatNumber,"
         . " FROM PersonalData pd  left join OwnershipData o  on o.personId = pd.id  left join Main m  "
         . " on o.gemhNumber = m.gemhNumber  left join MemberPosition mp  on mp.personId=pd.id  left join Main m2  on mp.gemhNumber = m2.gemhNumber "
         . " left join Main m3 on m3.vatId = pd.vatNumber "
-        . " where pd.issueddate >= $dateUpdate "
-        . " AND pd.vatNumber = '003352545' "
+        . " where pd.issueddate >= '$dateUpdate' "
+        #. " AND pd.vatNumber = '077298662' "
         . " group by pd.id ";
        # . "' ";
   # and issueddate >= '$dateUpdate'  "
