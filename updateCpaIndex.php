@@ -4,21 +4,21 @@ $couchUserPwd = couchUser.':'.couchPass;
 $time_pre = microtime(true);
 $counter = 1;
 $ch = curl_init();
-$input_path= "C:/temp/chambers/";
 $db = 'lb_cpa_l1';
-$files=array_diff(scandir($input_path), array('..', '.'));
-foreach($files as $let=>$word){
-    if (($handle = fopen($input_path.$word, "r")) !== FALSE){
-        while (($row = fgetcsv($handle, 100000, ",")) !== FALSE) {
-            if(!mb_detect_encoding($row[0] , 'utf-8', true)){
-                $row[0]  = utf8_encode($row[0]);
-             }
-              $id = $row[0];    
-               $arr = array(
-                    "chamber_gr"   => $row[2],
-                    "chamber_en"   =>$row[3],
+$connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
+mysqli_set_charset($connGemh,"utf8");
+$sql = "SELECT id,code,title  FROM gemhV2.CpaList where level = 1";
+echo $sql;
+$result = $connGemh->query($sql);
+if ($result->num_rows > 0) {
+     while($row = $result->fetch_assoc()){
+         $id = $row['code'];
+         $arr = array(
+                    "id"   => $row['id'],
+                    "code"   =>$row['code'],
+                    "title"   =>$row['title']
                );
-               $file_contents=json_encode($arr,JSON_UNESCAPED_UNICODE);
+         $file_contents=json_encode($arr,JSON_UNESCAPED_UNICODE);
                 curl_setopt($ch, CURLOPT_URL, 'http://83.212.86.158:5984/'.$db.'/'.$id);
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT'); /* or PUT */
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $file_contents);
@@ -28,10 +28,11 @@ foreach($files as $let=>$word){
                                'Content-type: application/json',
                                'Accept: */*'
                 ));
-        $response = curl_exec($ch);
-        }
-    }
+                $response = curl_exec($ch);
+                print_r($response);
+     }
 }
+
 
 
 

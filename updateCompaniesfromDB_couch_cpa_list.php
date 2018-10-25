@@ -35,7 +35,13 @@ $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
      while($row = $result->fetch_assoc()){
          #print_r(objectfromConcatString($row['cpaArray']));
-         $cpaAll = objectfromConcatString($row['cpaArray']);
+         if ($row['cpaArray'] !=='') {
+             $cpaAll = objectfromConcatString($row['cpaArray']);
+         }
+         else {
+              $cpaAll = [];
+         }
+             
         
          if ($row['correctVat']==='true'){
             
