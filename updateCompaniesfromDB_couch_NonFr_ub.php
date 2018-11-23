@@ -2,17 +2,18 @@
 include 'config.php';
 include 'collectData.php';
 $couchUserPwd = couchUser.':'.couchPass;
+$couchUserPwd ="dimneg:fujintua0)";
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
-$dateUpdate = '2018-08-03';
+$dateUpdate = '2018-09-21';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
 $db = companiescouchDB;
 $ch = curl_init();
 
- $dir_base= "d:/temp/non_fr/";
+ $dir_base= "/home/user/searchLB/temp/non_fr/";
  
  if (file_exists($dir_base."found/")) {
      deleteDir($dir_base."found/"); //delete temp folder
@@ -29,21 +30,24 @@ $sql = "  SELECT m.vatId, m.gemhnumber, m.orgType, m.street, m.postalCode, m.loc
         . "  FROM Main m  left join companyCpa cc on cc.gemhnumber = m.gemhNumber left join CpaList cl on cl.apiCpa=cc.apiCpa "
         ." right join  companyCpa cc2 on cc2.gemhnumber = m.gemhNumber right join CpaList cl2 on (cl2.apiCpa=cc2.apiCpa and  cc2.main = 1) "
         . "where (m.orgtype <> 'FR' ) "
-        #. "and m.issueddate >= subdate(current_date,0 )"
-        . " and m.gemhnumber='059163704000' "
+        . "and m.issueddate >= subdate(current_date,0 )"
+        #. " and m.gemhnumber='059163704000' "
         . "group by m.gemhnumber  ";
-        
- #$sql = "SELECT * FROM Main where (orgtype <> 'FR' or orgtype is null) and vatId= '997834472'  ";
+       # . "where (m.orgtype <> 'FR' or m.orgtype is null) and m.issueddate >= subdate(current_date,0 )  group by m.gemhnumber  ";
+
 echo $sql;
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
      while($row = $result->fetch_assoc()){
-         if ($row['cpaArray'] !=='') {
+		 
+         
+	   if ($row['cpaArray'] !=='') {
              $cpaAll = objectfromConcatString($row['cpaArray']);
          }
          else {
               $cpaAll = [];
          }
+		 
          if ($row['correctVat']==='true'){
             
              $link = $row['vatId'];
@@ -52,10 +56,8 @@ if ($result->num_rows > 0) {
              # $id = $row['gemhnumber'].'-'.$row['vatId'];
               $link = $row['vatId'].'-'.$row['gemhnumber'];
          }
-         $id = $row['gemhnumber'];
+          $id = $row['gemhnumber'];
          echo $row['orgType'].' '.$id;
-       # $ch = curl_init("http://83.212.86.164:8983/solr/".$core."/update?wt=json");
-       # 
          //find and delete
          $chUpd = curl_init();
          $urlUpd = couchPath.$db.'/'.$id;
@@ -95,8 +97,10 @@ if ($result->num_rows > 0) {
              $resultDel = curl_exec( $chDel);
              curl_close($chDel);
          }
+       # $ch = curl_init("http://83.212.86.164:8983/solr/".$core."/update?wt=json");
          
-         $arr = array(
+      
+                 $arr = array(
                     "id"   => $id,
                     "vat"   => $row['vatId'],     
                     "gemhNumber"   => $row['gemhnumber'],     
@@ -109,24 +113,24 @@ if ($result->num_rows > 0) {
                     'brandname'=>isset($row['brandname']) ? $row['brandname'] : '',
                     'status'=>isset($row['status']) ? $row['status'] : '',
                     'chamber'=>isset($row['chamber']) ? $row['chamber'] : '',
-                    'gemhdate'=>isset($row['gemhdate']) ? $row['gemhdate'] : '', //ημερομηνια απόδοσης ΓΕΜΗ
+                    'gemhdate'=>isset($row['gemhdate']) ? $row['gemhdate'] : '',
                     'registrationDate'=>isset($row['registrationDate']) ? $row['registrationDate'] : '',
                     'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',
                     'indexeddate'=>date("Y-m-d"),
                     'correctVat'=>isset($row['correctVat']) ? $row['correctVat'] : '',
-              'cpaTitle'=> isset($row['title']) ? $row['title'] : '',
-			   'cpaAll'=>$cpaAll,
-                     'link' => $link,
+                     'cpaTitle'=> isset($row['title']) ? $row['title'] : '',
+					 'cpaAll'=>$cpaAll,
+                    'link' => $link,
                
          );
          
          #$id = $row['gemhnumber'];
-        
+      
          
          $file_contents=json_encode($arr,JSON_UNESCAPED_UNICODE);
 
         # curl_setopt($ch, CURLOPT_URL, 'localhost:5984/'.$db.'/'.$id);
-         curl_setopt($ch, CURLOPT_URL, couchPath.$db.'/'.$id);
+         curl_setopt($ch, CURLOPT_URL, 'http://83.212.86.158:5984/'.$db.'/'.$id);
          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT'); /* or PUT */
          curl_setopt($ch, CURLOPT_POSTFIELDS, $file_contents);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -177,7 +181,7 @@ function deleteDir($dirPath) {
     $files = glob($dirPath . '*', GLOB_MARK);
     foreach ($files as $file) {
         if (is_dir($file)) {
-            self::deleteDir($file);
+           deleteDir($file);
         } else {
             unlink($file);
         }
@@ -194,7 +198,6 @@ function is_dir_empty($dir) {
   }
   return TRUE;
 } 
-
 function objectfromConcatString($concatString){
     $cpaObject = [[]];
     $arrayL1= explode('~ ', $concatString);

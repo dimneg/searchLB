@@ -2,18 +2,21 @@
 include 'config.php';
 include 'collectData.php';
 $couchUserPwd = couchUser.':'.couchPass;
+$couchUserPwd ="dimneg:fujintua0)";
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
-$dateUpdate = '2018-08-03';
+$dateUpdate = '2018-09-21';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
-$db = companiescouchDB;
+$db = FRcouchDB;
 $ch = curl_init();
 
- $dir_base= "d:/temp/non_fr/";
- 
+###settings for update######
+ #$dir_base= '/var/www/linkedeconomy/mupl/AutoOutput'; 
+ $dir_base= "/home/user/searchLB/temp/";
+
  if (file_exists($dir_base."found/")) {
      deleteDir($dir_base."found/"); //delete temp folder
      if (!is_dir_empty($dir_base."found/")){
@@ -21,6 +24,9 @@ $ch = curl_init();
      }
          
  }
+
+######################
+
 $sql ="SET SESSION group_concat_max_len = 1000000;";
 $result = $connGemh->query($sql);
 #$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate >= '$dateUpdate'  limit 10000 offset 10000";
@@ -28,13 +34,11 @@ $sql = "  SELECT m.vatId, m.gemhnumber, m.orgType, m.street, m.postalCode, m.loc
         . " cl2.title ,  (select (group_concat( distinct cl.apiCpa,'#',cl.level1Code,'#',cl.countCompanies,'#',IFNULL(cl.marketId,' '),'#',cl.code,'#',cc.main,'#',cl.parent SEPARATOR '~ ') ) ) as cpaArray "
         . "  FROM Main m  left join companyCpa cc on cc.gemhnumber = m.gemhNumber left join CpaList cl on cl.apiCpa=cc.apiCpa "
         ." right join  companyCpa cc2 on cc2.gemhnumber = m.gemhNumber right join CpaList cl2 on (cl2.apiCpa=cc2.apiCpa and  cc2.main = 1) "
-        . "where (m.orgtype <> 'FR' ) "
-        #. "and m.issueddate >= subdate(current_date,0 )"
-        . " and m.gemhnumber='059163704000' "
+        . "where (m.orgtype = 'FR' ) "
+        . "and m.issueddate >= subdate(current_date,0 )"
+        #. " and m.gemhnumber='059163704000' "
         . "group by m.gemhnumber  ";
-        
- #$sql = "SELECT * FROM Main where (orgtype <> 'FR' or orgtype is null) and vatId= '997834472'  ";
-echo $sql;
+       # . "where (m.orgtype <> 'FR' or m.orgtype is null) and m.issueddate >= subdate(current_date,0 )  group by m.gemhnumber  ";
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
      while($row = $result->fetch_assoc()){
@@ -165,8 +169,6 @@ echo '(In '.number_format($exec_time/60,2).' mins)'.PHP_EOL ;
 ############### delete all json from core
 # sudo curl "http://127.0.0.1:8983/solr/LbPersons/update?commit=true" -H "Content-Type: text/xml" --data-binary '<delete><query>*:*</query></delete>'
 
-
-
 function deleteDir($dirPath) {
     if (! is_dir($dirPath)) {
         throw new InvalidArgumentException("$dirPath must be a directory");
@@ -177,7 +179,7 @@ function deleteDir($dirPath) {
     $files = glob($dirPath . '*', GLOB_MARK);
     foreach ($files as $file) {
         if (is_dir($file)) {
-            self::deleteDir($file);
+            deleteDir($file);
         } else {
             unlink($file);
         }
@@ -194,7 +196,6 @@ function is_dir_empty($dir) {
   }
   return TRUE;
 } 
-
 function objectfromConcatString($concatString){
     $cpaObject = [[]];
     $arrayL1= explode('~ ', $concatString);
@@ -212,3 +213,4 @@ function objectfromConcatString($concatString){
     }
     return  $cpaObject;
 }
+
