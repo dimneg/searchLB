@@ -102,7 +102,7 @@ foreach($files as $let=>$word){
          );
                   $counter++; 
          
-        $file_contents=json_encode($arr,JSON_UNESCAPED_UNICODE);
+         $file_contents=json_encode($arr,JSON_UNESCAPED_UNICODE);
 
          curl_setopt($ch, CURLOPT_URL, 'http://83.212.86.158:5984/'.$db.'/'.$id);
          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT'); /* or PUT */

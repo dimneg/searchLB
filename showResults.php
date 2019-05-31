@@ -220,9 +220,21 @@ class showResults {
         return $numbered;
     }
 
-    function fromNumberToText($number,$currency) {
+    public static function fromNumberToText($number,$currency) {
         $texted = $currency.'0.0K'; //€0.0K
         $digits = strlen($number);
+        
+        if (strpos($number, '.')!== false ){
+               $splitString = explode('.', $number);
+                if( strlen($splitString[count($splitString)-1])== 2){
+                    $digits = strlen($number) - 2;
+                }
+                if( strlen($splitString[count($splitString)-1])== 3){
+                    $digits = strlen($number) - 3;
+                }
+        }
+        
+        
 	if (($digits == 1) || (($digits) == 2)){
             $texted = $currency.'0.0K';
 	}
@@ -233,24 +245,24 @@ class showResults {
 	}
 	else
 	if ($digits == 4) { //e.g 8600->8.6K
-	$dividor = 1000;
+            $dividor = 1000;
 	//$texted='€'.round($number/($dividor),1).'K';
-	$texted = $currency.number_format(round($number/($dividor),1), 1, '.', '').'K';
+            $texted = $currency.number_format(round($number/($dividor),1), 1, '.', '').'K';
 	}
 	else
 	if ($digits == 5) { //e.g 86000->86K
-	$dividor=1000;
-	$texted=$currency.number_format(round($number/($dividor),1), 1, '.', '').'K';
+            $dividor=1000;
+            $texted=$currency.number_format(round($number/($dividor),1), 1, '.', '').'K';
 	}
 	else
 	if ($digits == 6) { //e.g 860000->0.8M (kanonika 0.9)
-	$dividor=1000000;
-	$texted=$currency.number_format(round($number/($dividor),1), 1, '.', '').'M';
+            $dividor=1000000;
+            $texted=$currency.number_format(round($number/($dividor),1), 1, '.', '').'M';
 	}
 	else
 	if ($digits == 7) { //e.g 8.600.000->8.6K  
-	$dividor=1000000;
-	$texted=$currency.number_format(round($number/($dividor),1), 1, '.', '').'M';
+            $dividor=1000000;
+            $texted=$currency.number_format(round($number/($dividor),1), 1, '.', '').'M';
 	}
 	else
 	if ($digits == 8) { //e.g 80.600.000->80.6M  
@@ -259,8 +271,8 @@ class showResults {
 	}
 	else
 	if ($digits == 9) { //e.g 800.600.000->0.8B  //ok
-	$dividor=1000000000;
-	$texted=$currency.number_format(round($number/($dividor),1), 1, '.', '').'B';
+            $dividor=1000000000;
+            $texted=$currency.number_format(round($number/($dividor),1), 1, '.', '').'B';
 	}
 	else
 	if ($digits == 10) { //e.g 8.000.600.000->8B  //ok
@@ -270,14 +282,29 @@ class showResults {
 	else
 	if ($digits == 11) { //e.g 80.000.600.000->80B  //ok
 	$dividor=1000000000;
-	$texted=$currency.number_format(round($number/($dividor),1), 1, '.', '').'B';
+            $texted=$currency.number_format(round($number/($dividor),1), 1, '.', '').'B';
 	}
 	else {
-	$texted=$currency.'0.0K'; //test only
+            $texted=$currency.'0.0K'; //test only
 	}
 
 	return $texted;
 }
+
+    public static function convertAmountToText($amount,$currency){
+        $label =null;
+        if (abs($amount) > 1000 || abs($amount) <= 1000) {
+                    $label = round($amount / 1000, 1)."K";                            
+                } 
+                if (abs($amount) > 1000000) {
+                    $label = round($amount / 1000000, 1)."M";
+                } 
+                if (abs($amount) > 1000000000) {
+                    $label = round($amount / 1000000000, 1)."B";                                
+                }
+                return $currency.$label;
+    }
+    
 
     function hide_not_avail($field){
 	if (($field=='Μη Διαθέσιμο') || ($field=='Ο ΑΦΜ δεν έχει καταχωρηθεί') ||($field=='-')){

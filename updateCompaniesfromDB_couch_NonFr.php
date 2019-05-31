@@ -1,6 +1,8 @@
 <?php
 include 'config.php';
 include 'collectData.php';
+include 'Rdf.php';
+include 'showResults.php';
 $couchUserPwd = couchUser.':'.couchPass;
 $time_pre = microtime(true);
 $counter = 1;
@@ -30,7 +32,8 @@ $sql = "  SELECT m.vatId, m.gemhnumber, m.orgType, m.street, m.postalCode, m.loc
         ." right join  companyCpa cc2 on cc2.gemhnumber = m.gemhNumber right join CpaList cl2 on (cl2.apiCpa=cc2.apiCpa and  cc2.main = 1) "
         . "where (m.orgtype <> 'FR' ) "
         #. "and m.issueddate >= subdate(current_date,0 )"
-        . " and m.gemhnumber='059163704000' "
+       # . "and m.issueddate = '2019-04-09' "
+       . " and m.gemhnumber='001037501000' " //148595001000 //003467701000 //001352601000
         . "group by m.gemhnumber  ";
         
  #$sql = "SELECT * FROM Main where (orgtype <> 'FR' or orgtype is null) and vatId= '997834472'  ";
@@ -45,8 +48,14 @@ if ($result->num_rows > 0) {
               $cpaAll = [];
          }
          if ($row['correctVat']==='true'){
+            $bidVat= checkBidToVat($connGemh,$row['vatId']);
+            if ($bidVat == NULL) {
+                $link = $row['vatId'];
+            }
+            else {
+                 $link = $bidVat;
+            }
             
-             $link = $row['vatId'];
          }
          else {
              # $id = $row['gemhnumber'].'-'.$row['vatId'];
@@ -96,6 +105,24 @@ if ($result->num_rows > 0) {
              curl_close($chDel);
          }
          
+         
+         #$Rdf = new Rdf();
+         
+         $diavgeiaApprovals = Rdf::requestDiaugeiaExpenseApprovalItem(connection_url,$row['vatId']);
+         $diavgeiaApprovalsCnt = $diavgeiaApprovals[1];
+         $diavgeiaApprovalsAmount = $diavgeiaApprovals[0];
+         echo $diavgeiaApprovalsCnt.PHP_EOL; 
+         
+         $diavgeiaPayments = Rdf::requestDiaugeiaPaymentItem(connection_url,$row['vatId']);
+         #$diavgeiaPaymentsCnt = $diavgeiaApprovals[1]+$diavgeiaPayments[1];
+         $diavgeiaPaymentsCnt = $diavgeiaPayments[1];
+         $diavgeiaPaymentsAmount = $diavgeiaPayments[0];
+         echo  $diavgeiaPaymentsCnt .PHP_EOL; 
+         
+         $espaContracts = Rdf::requestEspaContracts(connection_url, $row['vatId']);         
+         $espaContractsCnt =(isset( $espaContracts[1] )) ?  $espaContracts[1] : '' ;  
+         $espaContractsAmount =(isset( $espaContracts[0] )) ? $espaContracts[0] : '' ; 
+         
          $arr = array(
                     "id"   => $id,
                     "vat"   => $row['vatId'],     
@@ -114,9 +141,23 @@ if ($result->num_rows > 0) {
                     'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',
                     'indexeddate'=>date("Y-m-d"),
                     'correctVat'=>isset($row['correctVat']) ? $row['correctVat'] : '',
-              'cpaTitle'=> isset($row['title']) ? $row['title'] : '',
-			   'cpaAll'=>$cpaAll,
-                     'link' => $link,
+                    'cpaTitle'=> isset($row['title']) ? $row['title'] : '',
+	            'cpaAll'=>$cpaAll,
+                    'link' => $link,
+                    'diavgeia_payments_cnt'=> $diavgeiaPaymentsCnt, 
+                    'diavgeia_payments_amount'=>  showResults::convertAmountToText($diavgeiaPaymentsAmount,'€'),
+                    'diavgeia_approvals_cnt'=> $diavgeiaApprovalsCnt, 
+                    'diavgeia_approvals_amount'=>showResults::convertAmountToText($diavgeiaApprovalsAmount,'€'),
+                    'diavgeia_last_update'=>NULL,
+                    #'khmdhs_contracts_cnt'=>0,
+                    #'khmdhs_contracts_amount'=>0,   
+                    #'khmdhs_payments_cnt'=>0,
+                    #'khmdhs_payments_amount'=>0,
+                    'espa_contracts_cnt'=> $espaContractsCnt,
+                    'espa_contracts_amount'=>showResults::convertAmountToText($espaContractsAmount,'€'),
+                    'espa_payments_cnt'=>NULL,
+                    'espa_payments_amount'=>NULL,
+             
                
          );
          
@@ -211,4 +252,20 @@ function objectfromConcatString($concatString){
         
     }
     return  $cpaObject;
+}
+
+function checkBidToVat($conn,$vat){
+    $sql = "SELECT * FROM BidToVat where vatId='$vat' order by date desc limit 1 ";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+         while($row = $result->fetch_assoc()){
+             return $row['bid'].'-'.$row['gemhnumber'];
+         }
+    }
+    else {
+        return NULL;
+    }
+    
+    
+    
 }

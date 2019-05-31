@@ -5,18 +5,11 @@ $couchUserPwd = couchUser.':'.couchPass;
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
-$dateUpdate = '2017-01-01';
-$connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
-mysqli_set_charset($connGemh,"utf8");
 
-$db = FRcouchDB;
-$ch = curl_init();
+#$dir_base= "/home/user/searchLB/temp/mp/temp/";
+$dir_base= "c:/temp/mp/temp/";
 
-###settings for update######
- #$dir_base= '/var/www/linkedeconomy/mupl/AutoOutput'; 
- $dir_base= "d:/temp/fr/";
-
- if (file_exists($dir_base."found/")) {
+if (file_exists($dir_base."found/")) {
      deleteDir($dir_base."found/"); //delete temp folder
      if (!is_dir_empty($dir_base."found/")){
          mkdir($dir_base."found/", 0777); //create temp folder for files to be updated
@@ -24,40 +17,33 @@ $ch = curl_init();
          
  }
 
-######################
+$dateUpdate = '2019-05-01';
+$connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
+mysqli_set_charset($connGemh,"utf8");
 
+$db = MPcouchDB;
+$ch = curl_init();
 
-#$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate >= '$dateUpdate'  limit 10000 offset 10000";
-#$sql = "SELECT * FROM Main where orgtype = 'FR' and issueddate >= '$dateUpdate ' ";
- $sql = "SELECT m.vatId, m.gemhnumber, m.orgType, m.street, m.postalCode, m.locality, m.name, m.brandname, m.status, m.chamber, m.gemhdate, m.registrationDate, m.issueddate, m.correctVat, cl.title "
-        . "  FROM Main m   join companyCpa cc on cc.gemhnumber = m.gemhNumber  join CpaList cl on cl.apiCpa=cc.apiCpa " 
-        #. "where (m.orgtype= 'FR') and cc.main = 1 and m.issueddate >= '$dateUpdate ' group by m.gemhnumber limit 1000 offset 0";
-        
-         . "where m.orgtype= 'FR' and cc.main = 1 and m.vatId like '0%'  group by m.gemhnumber limit 1000 offset 320000";
-echo $sql.PHP_EOL;
+$sql = " SELECT  mp.id, mp.name, m.vatId as s_mgmtCompanyVat,  m.correctVat as s_mgmtCorrectVat,  m.gemhnumber as s_mgmtGemhNumber, m.name as s_mgmtCompanyName"
+       # . " from MemberPosition mp join Main m on m.gemhnumber=mp.gemhnumber where mp.personId=0 and  mp.issuedDate >= subdate(current_date,0 ) limit 700000 offset 0 ";
+         . " from MemberPosition mp join Main m on m.gemhnumber=mp.gemhnumber where mp.personId=0 and mp.forDelete <> 1  and mp.issuedDate >= '$dateUpdate'  limit 700000 offset 0 ";
+  
+echo $sql;
+
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
      while($row = $result->fetch_assoc()){
-         if ($row['orgType'] ==='FR'){
+         
+         $id = $row['id'];
+          if ($row['s_mgmtCorrectVat']==='true'){
             
-             $core = FRSolrCore;
-         }
-         else {
-             $core = companiesSolrCore;
-              #echo $row['orgType'];
-         }
-         if ($row['correctVat']==='true'){
-            
-             $link = $row['vatId'];
+            $s_mgmtCompanyLink = $row['s_mgmtCompanyVat'];
          }
          else {
              # $id = $row['gemhnumber'].'-'.$row['vatId'];
-              $link = $row['vatId'].'-'.$row['gemhnumber'];
+              $s_mgmtCompanyLink = $row['s_mgmtCompanyVat'].'-'.$row['s_mgmtGemhNumber'];
          }
-         $id = $row['gemhnumber'];
-         echo $row['orgType'].' '.$id;
-       # $ch = curl_init("http://83.212.86.164:8983/solr/".$core."/update?wt=json");
-       # 
+         
          //find and delete
          $chUpd = curl_init();
          $urlUpd = couchPath.$db.'/'.$id;
@@ -97,41 +83,32 @@ if ($result->num_rows > 0) {
              $resultDel = curl_exec( $chDel);
              curl_close($chDel);
          }
-         
-         $arr = array(
-                    "id"   => $id,
-                    "vat"   => $row['vatId'],     
-                    "gemhNumber"   => $row['gemhnumber'],     
-                    "orgType"   =>isset($row['orgType']) ? $row['orgType'] : '',
-                    "address" => isset($row['street']) ? $row['street'] : '',
-                    'postcode'=>isset($row['postalCode']) ? $row['postalCode'] : '', 
-                    'city'=>isset($row['locality']) ? $row['locality'] : '',
+       
+          $arr = array(
+            
+                    "row"   => $row['id'],
+                   
                     'name'=>isset($row['name']) ? $row['name'] : '',
-                    'name_eng'=> $transform->transliterate($transform->unaccent(mb_convert_case($row['name'], MB_CASE_UPPER, "UTF-8"))),
-                    'brandname'=>isset($row['brandname']) ? $row['brandname'] : '',
-                    'status'=>isset($row['status']) ? $row['status'] : '',
-                    'chamber'=>isset($row['chamber']) ? $row['chamber'] : '',
-                    'gemhdate'=>isset($row['gemhdate']) ? $row['gemhdate'] : '', //ημερομηνια απόδοσης ΓΕΜΗ
-                    'registrationDate'=>isset($row['registrationDate']) ? $row['registrationDate'] : '',
-                    'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',
-                    'indexeddate'=>date("Y-m-d"),
-                    'correctVat'=>isset($row['correctVat']) ? $row['correctVat'] : '',
-              'cpaTitle'=> isset($row['title']) ? $row['title'] : '',
-                     'link' => $link,
+                    'name_eng'=> $transform->transliterate($transform->unaccent(mb_convert_case($row['name'], MB_CASE_UPPER, "UTF-8"))),                 
+                   #  'isCompany'=>isset($row['isCompany']) ? $row['is'] : '',   
+                    'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',                   
+                    's_mgmtCompanyVat'=>isset($row['s_mgmtCompanyVat']) ? $row['s_mgmtCompanyVat'] : '',
+                    's_mgmtCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : '',
+                    's_mgmtCompanyLink'=>$s_mgmtCompanyLink,
+                    #'s_ownCompanyVat'=>isset($row['s_mgmtCompanyVat']) ? $row['s_mgmtCompanyVat'] : '',
+                    #'s_ownCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : ''
                
          );
          
          #$id = $row['gemhnumber'];
-        
-         
          $file_contents=json_encode($arr,JSON_UNESCAPED_UNICODE);
 
         # curl_setopt($ch, CURLOPT_URL, 'localhost:5984/'.$db.'/'.$id);
-         curl_setopt($ch, CURLOPT_URL, couchPath.$db.'/'.$id);
+         curl_setopt($ch, CURLOPT_URL, 'http://83.212.86.158:5984/'.$db.'/'.$id);
          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT'); /* or PUT */
          curl_setopt($ch, CURLOPT_POSTFIELDS, $file_contents);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-         curl_setopt($ch, CURLOPT_USERPWD, $couchUserPwd);
+         curl_setopt($ch, CURLOPT_USERPWD, $couchUserPwd );
          curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                         'Content-type: application/json',
                         'Accept: */*'
@@ -142,15 +119,13 @@ if ($result->num_rows > 0) {
         $counter++;
 
          
-        #print_r( $response); 
-        # curl_close($ch);
         
      }
 }
 
       
-curl_close($ch);
 
+curl_close($ch);
 $connGemh->close();
 $time_post = microtime(true);
 $exec_time = $time_post - $time_pre;
@@ -161,10 +136,11 @@ echo '(In '.number_format($exec_time/60,2).' mins)'.PHP_EOL ;
 
 ################# create core
 # cd /opt/solr
-# sudo -u solr ./bin/solr create -c LbCompanies
+# sudo -u solr ./bin/solr create -c LbPersons
 
 ############### delete all json from core
 # sudo curl "http://127.0.0.1:8983/solr/LbPersons/update?commit=true" -H "Content-Type: text/xml" --data-binary '<delete><query>*:*</query></delete>'
+
 
 function deleteDir($dirPath) {
     if (! is_dir($dirPath)) {
@@ -176,7 +152,7 @@ function deleteDir($dirPath) {
     $files = glob($dirPath . '*', GLOB_MARK);
     foreach ($files as $file) {
         if (is_dir($file)) {
-            self::deleteDir($file);
+            deleteDir($file);
         } else {
             unlink($file);
         }
@@ -193,4 +169,3 @@ function is_dir_empty($dir) {
   }
   return TRUE;
 } 
-

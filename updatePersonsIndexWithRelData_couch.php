@@ -7,7 +7,7 @@ $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
 
-$dateUpdate = '2018-09-15';
+$dateUpdate = '2019-01-01';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
