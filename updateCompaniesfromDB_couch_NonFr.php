@@ -14,7 +14,16 @@ mysqli_set_charset($connGemh,"utf8");
 $db = companiescouchDB;
 $ch = curl_init();
 
- $dir_base= "d:/temp/non_fr/";
+$manualDate = isset($argv[1]) ? $argv[1]: '';
+
+ if (PHP_OS==='WINNT') {
+    $dir_base= "C:/temp/non_fr/";
+}
+else {
+    $dir_base= "/home/user/searchLB/temp/non_fr/";
+}
+
+ 
  
  if (file_exists($dir_base."found/")) {
      deleteDir($dir_base."found/"); //delete temp folder
@@ -23,6 +32,19 @@ $ch = curl_init();
      }
          
  }
+ 
+ 
+ if ($manualDate !=''){
+     
+     $date = $manualDate;
+     
+ }
+ else {
+     
+     $date =  '2019-06-01';
+     
+ }
+ 
 $sql ="SET SESSION group_concat_max_len = 1000000;";
 $result = $connGemh->query($sql);
 #$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate >= '$dateUpdate'  limit 10000 offset 10000";
@@ -31,9 +53,9 @@ $sql = "  SELECT m.vatId, m.gemhnumber, m.orgType, m.street, m.postalCode, m.loc
         . "  FROM Main m  left join companyCpa cc on cc.gemhnumber = m.gemhNumber left join CpaList cl on cl.apiCpa=cc.apiCpa "
         ." right join  companyCpa cc2 on cc2.gemhnumber = m.gemhNumber right join CpaList cl2 on (cl2.apiCpa=cc2.apiCpa and  cc2.main = 1) "
         . "where (m.orgtype <> 'FR' ) "
-        #. "and m.issueddate >= subdate(current_date,0 )"
+        . "and m.issueddate >= '$date' and m.issueddate <= '2019-08-31' "
        # . "and m.issueddate = '2019-04-09' "
-       . " and m.gemhnumber='001037501000' " //148595001000 //003467701000 //001352601000
+       #. " and m.gemhnumber='001037501000' " //148595001000 //003467701000 //001352601000
         . "group by m.gemhnumber  ";
         
  #$sql = "SELECT * FROM Main where (orgtype <> 'FR' or orgtype is null) and vatId= '997834472'  ";
@@ -218,7 +240,7 @@ function deleteDir($dirPath) {
     $files = glob($dirPath . '*', GLOB_MARK);
     foreach ($files as $file) {
         if (is_dir($file)) {
-            self::deleteDir($file);
+            deleteDir($file);
         } else {
             unlink($file);
         }
