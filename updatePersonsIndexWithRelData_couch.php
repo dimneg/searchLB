@@ -1,18 +1,41 @@
 <?php
 include 'config.php';
 include 'collectData.php';
+include 'Rdf.php';
+include 'showResults.php';
 $couchUserPwd = couchUser.':'.couchPass;
+#$couchUserPwd ="dimneg:fujintua0)";
 
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
 
-$dateUpdate = '2019-01-01';
+$dateUpdate = '2018-09-21';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
 $db = personscouchDB;
-$dir_base= "d:/temp/persons/";
+
+$manualDate = isset($argv[1]) ? $argv[1]: '';
+
+ if (PHP_OS==='WINNT') {
+    $dir_base= "C:/temp/persons/";
+}
+else {
+    $dir_base= "/home/user/searchLB/temp/persons/";
+}
+
+if ($manualDate !=''){
+     
+     $date = $manualDate;
+     
+ }
+ else {
+     
+     $date =  '2019-08-01';
+     
+ }
+ 
 $ch = curl_init();
 
 $sql = " SELECT  pd.id, pd.vatNumber,"
@@ -26,8 +49,9 @@ $sql = " SELECT  pd.id, pd.vatNumber,"
         . " FROM PersonalData pd  left join OwnershipData o  on o.personId = pd.id  left join Main m  "
         . " on o.gemhNumber = m.gemhNumber  left join MemberPosition mp  on mp.personId=pd.id  left join Main m2  on mp.gemhNumber = m2.gemhNumber "
         . " left join Main m3 on m3.vatId = pd.vatNumber "
-        . " where pd.issueddate >= '$dateUpdate' "
-        #. " AND pd.vatNumber = '077298662' "
+       # . " where pd.issueddate >= subdate(current_date,0 ) "
+	. " where  pd.issueddate >= '$date' AND pd.issueddate <= '2019-08-31' "
+       # . " where pd.vatNumber = '003352545' "
         . " group by pd.id ";
        # . "' ";
   # and issueddate >= '$dateUpdate'  "
@@ -83,25 +107,69 @@ if ($result->num_rows > 0) {
             
          }
          else {
+			 $bidVat= checkBidToVat($connGemh,$row['vatNumber']);
+			 if ($bidVat == NULL) {
+				 $link = $row['vatNumber'];
+			 }
+			 else {
+				 $link = $bidVat;
+			 }
              # $id = $row['gemhnumber'].'-'.$row['vatId'];
-             $link = $row['vatNumber'];
+            
          }
          if ($row['s_mgmtCorrectVat']==='true'){
+			 $s_mgmt_bidVat= checkBidToVat($connGemh,$row['s_mgmtCompanyVat']);
+             if ($s_mgmt_bidVat == NULL) {
+				 $s_mgmtCompanyLink = $row['s_mgmtCompanyVat'];
+			 }
+			 else {
+				  $s_mgmtCompanyLink = $s_mgmt_bidVat;
+			 }
             
-            $s_mgmtCompanyLink = $row['s_mgmtCompanyVat'];
          }
          else {
              # $id = $row['gemhnumber'].'-'.$row['vatId'];
               $s_mgmtCompanyLink = $row['s_mgmtCompanyVat'].'-'.$row['s_mgmtGemhNumber'];
          }
          if ($row['s_ownCorrectVat']==='true'){
+			  $s_own_bidVat= checkBidToVat($connGemh,$row['s_mgmtCompanyVat']);
+			   if ($s_own_bidVat == NULL) {
+				   $s_ownCompanyLink = $row['s_ownCompanyVat'];
+			   }
+			   else {
+				    $s_ownCompanyLink = $s_own_bidVat;
+			   }
             
-             $s_ownCompanyLink = $row['s_ownCompanyVat'];
+             
          }
          else {
              # $id = $row['gemhnumber'].'-'.$row['vatId'];
               $s_ownCompanyLink = $row['s_ownCompanyVat'].'-'.$row['s_ownGemhNumber'];
          }
+         
+         
+         if ($row['isGsisCompany'] == 1){
+             $type = 'Organization';
+         }
+         else {
+              $type = 'Person';
+         }
+       
+         
+         $diavgeiaApprovals = Rdf::requestDiaugeiaExpenseApprovalItem(connection_url,$row['vatNumber'],$type);
+         $diavgeiaApprovalsCnt = $diavgeiaApprovals[1];
+         $diavgeiaApprovalsAmount = $diavgeiaApprovals[0];
+         echo $diavgeiaApprovalsCnt.PHP_EOL; 
+         
+         $diavgeiaPayments = Rdf::requestDiaugeiaPaymentItem(connection_url,$row['vatNumber'],$type);
+         #$diavgeiaPaymentsCnt = $diavgeiaApprovals[1]+$diavgeiaPayments[1];
+         $diavgeiaPaymentsCnt = $diavgeiaPayments[1];
+         $diavgeiaPaymentsAmount = $diavgeiaPayments[0];
+         echo  $diavgeiaPaymentsCnt .PHP_EOL; 
+         
+         $espaContracts = Rdf::requestEspaContracts(connection_url, $row['vatNumber'],$type);         
+         $espaContractsCnt =(isset( $espaContracts[1] )) ?  $espaContracts[1] : '' ;  
+         $espaContractsAmount =(isset( $espaContracts[0] )) ? $espaContracts[0] : '' ; 
          
           $arr = array(
             
@@ -125,6 +193,16 @@ if ($result->num_rows > 0) {
                     's_mgmtCompanyLink'=>$s_mgmtCompanyLink,
                     's_mgmtCompanyName'=>isset($row['s_mgmtCompanyName']) ? $row['s_mgmtCompanyName'] : '',
                     'indexeddate'=>date("Y-m-d"),
+                    'diavgeia_payments_cnt'=> $diavgeiaPaymentsCnt, 
+                    'diavgeia_payments_amount'=>  showResults::convertAmountToText($diavgeiaPaymentsAmount,'€'),
+                    'diavgeia_approvals_cnt'=> $diavgeiaApprovalsCnt, 
+                    'diavgeia_approvals_amount'=>showResults::convertAmountToText($diavgeiaApprovalsAmount,'€'),
+                    'diavgeia_last_update'=>Rdf::requesDiaugeiaLastUpdate(connection_url, $row['vatNumber'],$type),
+                    'espa_contracts_cnt'=> $espaContractsCnt,
+                    'espa_contracts_amount'=>showResults::convertAmountToText($espaContractsAmount,'€'),
+                    'espa_payments_cnt'=>NULL,
+                    'espa_payments_amount'=>NULL,
+                    'espa_last_update'=>  Rdf::requestEspaLastUpdate(connection_url,$row['vatNumber'],$type)
                
          );
          
@@ -180,7 +258,7 @@ function deleteDir($dirPath) {
     $files = glob($dirPath . '*', GLOB_MARK);
     foreach ($files as $file) {
         if (is_dir($file)) {
-            self::deleteDir($file);
+           deleteDir($file);
         } else {
             unlink($file);
         }
@@ -197,3 +275,18 @@ function is_dir_empty($dir) {
   }
   return TRUE;
 } 
+function checkBidToVat($conn,$vat){
+    $sql = "SELECT * FROM BidToVat where vatId='$vat' order by date desc limit 1 ";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+         while($row = $result->fetch_assoc()){
+             return $row['bid'].'-'.$row['gemhnumber'];
+         }
+    }
+    else {
+        return NULL;
+    }
+    
+    
+    
+}

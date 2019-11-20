@@ -17,10 +17,10 @@ $ch = curl_init();
 $manualDate = isset($argv[1]) ? $argv[1]: '';
 
  if (PHP_OS==='WINNT') {
-    $dir_base= "C:/temp/non_fr/";
+    $dir_base= "C:/temp/fr_delete/";
 }
 else {
-    $dir_base= "/home/user/searchLB/temp/non_fr/";
+    $dir_base= "/home/user/searchLB/temp/fr/";
 }
 
  
@@ -41,7 +41,7 @@ else {
  }
  else {
      
-     $date =  '2019-11-19';
+     $date =  '2019-11-01';
      
  }
  
@@ -52,8 +52,8 @@ $sql = "  SELECT m.vatId, m.gemhnumber, m.orgType, m.street, m.postalCode, m.loc
         . " cl2.title ,  (select (group_concat( distinct cl.apiCpa,'#',cl.level1Code,'#',cl.countCompanies,'#',IFNULL(cl.marketId,' '),'#',cl.code,'#',cc.main,'#',cl.parent SEPARATOR '~ ') ) ) as cpaArray "
         . "  FROM Main m  left join companyCpa cc on cc.gemhnumber = m.gemhNumber left join CpaList cl on cl.apiCpa=cc.apiCpa "
         ." right join  companyCpa cc2 on cc2.gemhnumber = m.gemhNumber right join CpaList cl2 on (cl2.apiCpa=cc2.apiCpa and  cc2.main = 1) "
-        . "where (m.orgtype <> 'FR' ) "
-        . "and m.issueddate >= '$date' and m.issueddate <= '2019-11-19' "
+        . "where (m.orgtype = 'FR' ) "
+        . "and m.issueddate >= '$date' and m.issueddate <= '2019-11-18' "
        # . "and m.issueddate = '2019-04-09' "
        #. " and m.gemhnumber='001037501000' " //148595001000 //003467701000 //001352601000
         . "group by m.gemhnumber  ";
@@ -115,7 +115,7 @@ if ($result->num_rows > 0) {
 	     $jsonDel['_id'] = str_replace('?','%3F', $jsonDel['_id']);
 	     $urlDel=couchPath.$db.'/'.$jsonDel['_id'];	
              
-             echo  $urlDel.' will be updated'.PHP_EOL;
+             echo  $urlDel.' will be deleted'.PHP_EOL;
              
              $urlrev=$urlDel.'?rev='.$jsonDel['_rev'];
              $chDel = curl_init();
@@ -130,77 +130,12 @@ if ($result->num_rows > 0) {
          
          #$Rdf = new Rdf();
          
-         $diavgeiaApprovals = Rdf::requestDiaugeiaExpenseApprovalItem(connection_url,$row['vatId']);
-         $diavgeiaApprovalsCnt = $diavgeiaApprovals[1];
-         $diavgeiaApprovalsAmount = $diavgeiaApprovals[0];
-         echo $diavgeiaApprovalsCnt.PHP_EOL; 
-         
-         $diavgeiaPayments = Rdf::requestDiaugeiaPaymentItem(connection_url,$row['vatId']);
-         #$diavgeiaPaymentsCnt = $diavgeiaApprovals[1]+$diavgeiaPayments[1];
-         $diavgeiaPaymentsCnt = $diavgeiaPayments[1];
-         $diavgeiaPaymentsAmount = $diavgeiaPayments[0];
-         echo  $diavgeiaPaymentsCnt .PHP_EOL; 
-         
-         $espaContracts = Rdf::requestEspaContracts(connection_url, $row['vatId']);         
-         $espaContractsCnt =(isset( $espaContracts[1] )) ?  $espaContracts[1] : '' ;  
-         $espaContractsAmount =(isset( $espaContracts[0] )) ? $espaContracts[0] : '' ; 
-         
-         $arr = array(
-                    "id"   => $id,
-                    "vat"   => $row['vatId'],     
-                    "gemhNumber"   => $row['gemhnumber'],     
-                    "orgType"   =>isset($row['orgType']) ? $row['orgType'] : '',
-                    "address" => isset($row['street']) ? $row['street'] : '',
-                    'postcode'=>isset($row['postalCode']) ? $row['postalCode'] : '', 
-                    'city'=>isset($row['locality']) ? $row['locality'] : '',
-                    'name'=>isset($row['name']) ? $row['name'] : '',
-                    'name_eng'=> $transform->transliterate($transform->unaccent(mb_convert_case($row['name'], MB_CASE_UPPER, "UTF-8"))),
-                    'brandname'=>isset($row['brandname']) ? $row['brandname'] : '',
-                    'status'=>isset($row['status']) ? $row['status'] : '',
-                    'chamber'=>isset($row['chamber']) ? $row['chamber'] : '',
-                    'gemhdate'=>isset($row['gemhdate']) ? $row['gemhdate'] : '', //ημερομηνια απόδοσης ΓΕΜΗ
-                    'registrationDate'=>isset($row['registrationDate']) ? $row['registrationDate'] : '',
-                    'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',
-                    'indexeddate'=>date("Y-m-d"),
-                    'correctVat'=>isset($row['correctVat']) ? $row['correctVat'] : '',
-                    'cpaTitle'=> isset($row['title']) ? $row['title'] : '',
-	            'cpaAll'=>$cpaAll,
-                    'link' => $link,
-                    'diavgeia_payments_cnt'=> $diavgeiaPaymentsCnt, 
-                    'diavgeia_payments_amount'=>  showResults::convertAmountToText($diavgeiaPaymentsAmount,'€'),
-                    'diavgeia_approvals_cnt'=> $diavgeiaApprovalsCnt, 
-                    'diavgeia_approvals_amount'=>showResults::convertAmountToText($diavgeiaApprovalsAmount,'€'),
-                    'diavgeia_last_update'=>Rdf::requesDiaugeiaLastUpdate(connection_url, $row['vatId'],$type),
-                    #'khmdhs_contracts_cnt'=>0,
-                    #'khmdhs_contracts_amount'=>0,   
-                    #'khmdhs_payments_cnt'=>0,
-                    #'khmdhs_payments_amount'=>0,
-                    'espa_contracts_cnt'=> $espaContractsCnt,
-                    'espa_contracts_amount'=>showResults::convertAmountToText($espaContractsAmount,'€'),
-                    'espa_payments_cnt'=>NULL,
-                    'espa_payments_amount'=>NULL,
-             
-               
-         );
+        
          
          #$id = $row['gemhnumber'];
         
          
-         $file_contents=json_encode($arr,JSON_UNESCAPED_UNICODE);
-
-        # curl_setopt($ch, CURLOPT_URL, 'localhost:5984/'.$db.'/'.$id);
-         curl_setopt($ch, CURLOPT_URL, couchPath.$db.'/'.$id);
-         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT'); /* or PUT */
-         curl_setopt($ch, CURLOPT_POSTFIELDS, $file_contents);
-         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-         curl_setopt($ch, CURLOPT_USERPWD, $couchUserPwd);
-         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                        'Content-type: application/json',
-                        'Accept: */*'
-         ));
-        $response = curl_exec($ch); 
-        echo $counter.'-'.$id.PHP_EOL;
-        echo $response.PHP_EOL;
+         
         $counter++;
 
          

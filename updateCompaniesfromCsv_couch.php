@@ -1,6 +1,8 @@
 <?php
 include 'config.php';
 include 'collectData.php';
+include 'Rdf.php';
+include 'showResults.php';
 $couchUserPwd = couchUser.':'.couchPass;
 $dateUpdate = '2018-07-28';
 $time_pre = microtime(true);

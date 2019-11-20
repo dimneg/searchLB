@@ -12,9 +12,9 @@
  * @author dimitris negkas
  */
 class Rdf {
-    public static function requestDiaugeiaPaymentItem($connection_url, $vatid){ 
+    public static function requestDiaugeiaPaymentItem($connection_url, $vatid,$type){ 
 		 
-        $type = 'Organization';
+        #$type = 'Organization';
 	$url = 	 "                  
                     PREFIX gr: <http://purl.org/goodrelations/v1#>
                                 PREFIX dcterms: <http://purl.org/dc/terms/>
@@ -92,9 +92,9 @@ class Rdf {
 	}
         
         
-   public static function requestDiaugeiaExpenseApprovalItem($connection_url, $vatid){
+   public static function requestDiaugeiaExpenseApprovalItem($connection_url, $vatid,$type){
 		 
-        $type = 'Organization';
+        #$type = 'Organization';
 	$url = 	 "                  
                     PREFIX elod: <http://linkedeconomy.org/ontology#>
                     PREFIX gr: <http://purl.org/goodrelations/v1#>
@@ -164,8 +164,148 @@ class Rdf {
                 
 	}     
         
-   public static function requestEspaContracts($connection_url, $vatid){
-      $type = 'Organization';
+   
+    
+   public static function requesDiaugeiaLastUpdate($connection_url, $vatid,$type){
+          $qry = "SELECT MAX(?date) as ?date MAX(?lastSearched) as ?lastSearched 
+                            FROM <http://linkedeconomy.org/Diavgeia>
+                            FROM <http://linkedeconomy.org/GemhOrganizations>
+                            FROM <http://linkedeconomy.org/Persons>
+                            WHERE { 
+                            {
+                            ?expenseApproval elod:hasExpenditureLine ?expenditureLine ; 
+                                 elod:submissionTimestamp ?date . 
+                            ?expenditureLine elod:seller <http://linkedeconomy.org/resource/".$type."/".$vatid."> .   
+                            } 
+                            UNION 
+                            { 
+                            ?contract elod:submissionTimestamp ?date ; 
+                                      elod:seller <http://linkedeconomy.org/resource/".$type."/".$vatid."> .  
+                            }
+                            UNION 
+                            {
+                            <http://linkedeconomy.org/resource/".$type."/".$vatid.">  elod:diavgeiaLastSearch ?lastSearched . 
+                            } 
+                            }" ;
+          if (!function_exists('curl_init')){ 
+			die('CURL is not installed!');
+             }
+	 
+		$post = [
+			'query' => $qry,
+			'format' => 'application/sparql-results+json',
+			'timeout' => '0',
+			'debug' => 'on'
+		];
+                
+                $curl= curl_init();
+				
+		curl_setopt_array($curl, array(
+		  CURLOPT_PORT => "8890",
+		  CURLOPT_URL => $connection_url,
+		  //CURLOPT_USERPWD => $username . ":" . $password,
+		  CURLOPT_RETURNTRANSFER => true,
+		  CURLOPT_ENCODING => "",
+		  CURLOPT_MAXREDIRS => 10,
+		  CURLOPT_TIMEOUT => 600,
+		  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,		  		  
+		  CURLOPT_POST => 1,
+		  CURLOPT_POSTFIELDS => $post
+		));
+
+		$response = curl_exec($curl);
+                 $json = json_decode($response,true);
+                 curl_close($curl);
+                # print_r($response);
+                  if (isset ($json['results'])) {
+                        if (isset ($json['results']['bindings'][0])) {
+                              if (isset ($json['results']['bindings'][0]['lastSearched']['value'])) {
+                                  return date_format(date_create($json['results']['bindings'][0]['lastSearched']['value']),"Y-m-d");
+                              }
+                              else {
+                                   return null;
+                              }
+                             
+                        }
+                        else {
+                            return null;
+                        }
+                  }
+                  else {
+                      return null;
+                  }
+   }
+    
+    public static function requestEspaLastUpdate($connection_url, $vatid,$type){
+         $qry = "SELECT MAX(?date) as ?date
+                        FROM <http://linkedeconomy.org/NSRF>
+                        WHERE {
+                        ?project a elod:PublicWork ;
+                                 elod:hasRelatedContract ?contract ;
+                                 dcterms:modified ?date .
+                        ?contract elod:seller <http://linkedeconomy.orgresource/".$type."/".$vatid."> .
+                        }
+                        order by desc (?date)
+                        limit 1
+                        "; 
+        if (!function_exists('curl_init')){ 
+			die('CURL is not installed!');
+             }
+	 
+		$post = [
+			'query' => $qry,
+			'format' => 'application/sparql-results+json',
+			'timeout' => '0',
+			'debug' => 'on'
+		];
+                
+                $curl= curl_init();
+				
+		curl_setopt_array($curl, array(
+		  CURLOPT_PORT => "8890",
+		  CURLOPT_URL => $connection_url,
+		  //CURLOPT_USERPWD => $username . ":" . $password,
+		  CURLOPT_RETURNTRANSFER => true,
+		  CURLOPT_ENCODING => "",
+		  CURLOPT_MAXREDIRS => 10,
+		  CURLOPT_TIMEOUT => 600,
+		  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,		  		  
+		  CURLOPT_POST => 1,
+		  CURLOPT_POSTFIELDS => $post
+		));
+
+		$response = curl_exec($curl);
+                
+                
+                $json = json_decode($response,true);
+                 curl_close($curl);
+                 #print_r($response);
+                if (isset ($json['results'])) {
+                      if (isset ($json['results']['bindings'][0])) {
+                          #return date_format(date_create(explode("+",$res_date_tmp["results"]["bindings"][0]["date"]["value"])[0]),"Y-m-d");
+                          #return date_format(date_create($json['results']['bindings'][0]['date']['value'][0])),"Y-m-d")));
+                            if (isset ($json['results']['bindings'][0]['date']['value'])){
+                                 return date_format(date_create($json['results']['bindings'][0]['date']['value']),"Y-m-d");
+                            }
+                            else {
+                                return null;
+                            }
+                         
+                      }
+                      else {
+                          
+                      }
+                }
+                else {
+                    return null;
+                }
+                
+                
+               
+    } 
+    
+    public static function requestEspaContracts($connection_url, $vatid,$type){
+      #$type = 'Organization';
                 $qry = "
                     SELECT distinct (str(?startDate) as ?date) (xsd:decimal(?amount) as ?amount)
                     FROM <http://linkedeconomy.org/NSRF>
@@ -180,7 +320,7 @@ class Rdf {
                 ";
                  if (!function_exists('curl_init')){ 
 			die('CURL is not installed!');
-            }
+                 }
 	 
 		$post = [
 			'query' => $qry,
@@ -227,4 +367,12 @@ class Rdf {
 		
 		return [$amount,$records];
     }
+    
+    public static function requestPayments($connection_url, $vatid,$type){
+        $url = 	 "                  
+                    
+                ";
+    }
+    
+    
 }

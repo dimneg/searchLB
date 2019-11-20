@@ -1,21 +1,30 @@
 <?php
 include 'config.php';
 include 'collectData.php';
+include 'Rdf.php';
+include 'showResults.php';
 $couchUserPwd = couchUser.':'.couchPass;
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
-$dateUpdate = '2017-01-01';
+$dateUpdate = '2018-08-03';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
 $db = FRcouchDB;
 $ch = curl_init();
 
-###settings for update######
- #$dir_base= '/var/www/linkedeconomy/mupl/AutoOutput'; 
- $dir_base= "d:/temp/fr/";
+$manualDate = isset($argv[1]) ? $argv[1]: '';
 
+ if (PHP_OS==='WINNT') {
+    $dir_base= "C:/temp/fr/";
+}
+else {
+    $dir_base= "/home/user/searchLB/temp/fr/";
+}
+
+ 
+ 
  if (file_exists($dir_base."found/")) {
      deleteDir($dir_base."found/"); //delete temp folder
      if (!is_dir_empty($dir_base."found/")){
@@ -23,32 +32,52 @@ $ch = curl_init();
      }
          
  }
-
-######################
-
-
+ 
+ 
+ if ($manualDate !=''){
+     
+     $date = $manualDate;
+     
+ }
+ else {
+     
+     $date =  '2019-11-19';
+     
+ }
+ 
+$sql ="SET SESSION group_concat_max_len = 1000000;";
+$result = $connGemh->query($sql);
 #$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate >= '$dateUpdate'  limit 10000 offset 10000";
-#$sql = "SELECT * FROM Main where orgtype = 'FR' and issueddate >= '$dateUpdate ' ";
- $sql = "SELECT m.vatId, m.gemhnumber, m.orgType, m.street, m.postalCode, m.locality, m.name, m.brandname, m.status, m.chamber, m.gemhdate, m.registrationDate, m.issueddate, m.correctVat, cl.title "
-        . "  FROM Main m   join companyCpa cc on cc.gemhnumber = m.gemhNumber  join CpaList cl on cl.apiCpa=cc.apiCpa " 
-        #. "where (m.orgtype= 'FR') and cc.main = 1 and m.issueddate >= '$dateUpdate ' group by m.gemhnumber limit 1000 offset 0";
+$sql = "  SELECT m.vatId, m.gemhnumber, m.orgType, m.street, m.postalCode, m.locality, m.name, m.brandname, m.status, m.chamber, m.gemhdate, m.registrationDate, m.issueddate, m.correctVat,"
+        . " cl2.title ,  (select (group_concat( distinct cl.apiCpa,'#',cl.level1Code,'#',cl.countCompanies,'#',IFNULL(cl.marketId,' '),'#',cl.code,'#',cc.main,'#',cl.parent SEPARATOR '~ ') ) ) as cpaArray "
+        . "  FROM Main m  left join companyCpa cc on cc.gemhnumber = m.gemhNumber left join CpaList cl on cl.apiCpa=cc.apiCpa "
+        ." right join  companyCpa cc2 on cc2.gemhnumber = m.gemhNumber right join CpaList cl2 on (cl2.apiCpa=cc2.apiCpa and  cc2.main = 1) "
+        . "where (m.orgtype = 'FR' ) "
+        . "and m.issueddate >= '$date' and m.issueddate <= '2019-11-19' "
+       # . "and m.issueddate = '2019-04-09' "
+       #. " and m.gemhnumber='001037501000' " //148595001000 //003467701000 //001352601000
+        . "group by m.gemhnumber  ";
         
-         . "where m.orgtype= 'FR' and cc.main = 1 and m.vatId like '0%'  group by m.gemhnumber limit 1000 offset 320000";
-echo $sql.PHP_EOL;
+ #$sql = "SELECT * FROM Main where (orgtype <> 'FR' or orgtype is null) and vatId= '997834472'  ";
+echo $sql;
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
      while($row = $result->fetch_assoc()){
-         if ($row['orgType'] ==='FR'){
-            
-             $core = FRSolrCore;
+         if ($row['cpaArray'] !=='') {
+             $cpaAll = objectfromConcatString($row['cpaArray']);
          }
          else {
-             $core = companiesSolrCore;
-              #echo $row['orgType'];
+              $cpaAll = [];
          }
          if ($row['correctVat']==='true'){
+            $bidVat= checkBidToVat($connGemh,$row['vatId']);
+            if ($bidVat == NULL) {
+                $link = $row['vatId'];
+            }
+            else {
+                 $link = $bidVat;
+            }
             
-             $link = $row['vatId'];
          }
          else {
              # $id = $row['gemhnumber'].'-'.$row['vatId'];
@@ -98,6 +127,24 @@ if ($result->num_rows > 0) {
              curl_close($chDel);
          }
          
+         
+         #$Rdf = new Rdf();
+         
+         $diavgeiaApprovals = Rdf::requestDiaugeiaExpenseApprovalItem(connection_url,$row['vatId']);
+         $diavgeiaApprovalsCnt = $diavgeiaApprovals[1];
+         $diavgeiaApprovalsAmount = $diavgeiaApprovals[0];
+         echo $diavgeiaApprovalsCnt.PHP_EOL; 
+         
+         $diavgeiaPayments = Rdf::requestDiaugeiaPaymentItem(connection_url,$row['vatId']);
+         #$diavgeiaPaymentsCnt = $diavgeiaApprovals[1]+$diavgeiaPayments[1];
+         $diavgeiaPaymentsCnt = $diavgeiaPayments[1];
+         $diavgeiaPaymentsAmount = $diavgeiaPayments[0];
+         echo  $diavgeiaPaymentsCnt .PHP_EOL; 
+         
+         $espaContracts = Rdf::requestEspaContracts(connection_url, $row['vatId']);         
+         $espaContractsCnt =(isset( $espaContracts[1] )) ?  $espaContracts[1] : '' ;  
+         $espaContractsAmount =(isset( $espaContracts[0] )) ? $espaContracts[0] : '' ; 
+         
          $arr = array(
                     "id"   => $id,
                     "vat"   => $row['vatId'],     
@@ -116,8 +163,23 @@ if ($result->num_rows > 0) {
                     'issueddate'=>isset($row['issueddate']) ? $row['issueddate'] : '',
                     'indexeddate'=>date("Y-m-d"),
                     'correctVat'=>isset($row['correctVat']) ? $row['correctVat'] : '',
-              'cpaTitle'=> isset($row['title']) ? $row['title'] : '',
-                     'link' => $link,
+                    'cpaTitle'=> isset($row['title']) ? $row['title'] : '',
+	            'cpaAll'=>$cpaAll,
+                    'link' => $link,
+                    'diavgeia_payments_cnt'=> $diavgeiaPaymentsCnt, 
+                    'diavgeia_payments_amount'=>  showResults::convertAmountToText($diavgeiaPaymentsAmount,'€'),
+                    'diavgeia_approvals_cnt'=> $diavgeiaApprovalsCnt, 
+                    'diavgeia_approvals_amount'=>showResults::convertAmountToText($diavgeiaApprovalsAmount,'€'),
+                    'diavgeia_last_update'=>Rdf::requesDiaugeiaLastUpdate(connection_url, $row['vatId'],$type),
+                    #'khmdhs_contracts_cnt'=>0,
+                    #'khmdhs_contracts_amount'=>0,   
+                    #'khmdhs_payments_cnt'=>0,
+                    #'khmdhs_payments_amount'=>0,
+                    'espa_contracts_cnt'=> $espaContractsCnt,
+                    'espa_contracts_amount'=>showResults::convertAmountToText($espaContractsAmount,'€'),
+                    'espa_payments_cnt'=>NULL,
+                    'espa_payments_amount'=>NULL,
+             
                
          );
          
@@ -166,6 +228,8 @@ echo '(In '.number_format($exec_time/60,2).' mins)'.PHP_EOL ;
 ############### delete all json from core
 # sudo curl "http://127.0.0.1:8983/solr/LbPersons/update?commit=true" -H "Content-Type: text/xml" --data-binary '<delete><query>*:*</query></delete>'
 
+
+
 function deleteDir($dirPath) {
     if (! is_dir($dirPath)) {
         throw new InvalidArgumentException("$dirPath must be a directory");
@@ -176,7 +240,7 @@ function deleteDir($dirPath) {
     $files = glob($dirPath . '*', GLOB_MARK);
     foreach ($files as $file) {
         if (is_dir($file)) {
-            self::deleteDir($file);
+            deleteDir($file);
         } else {
             unlink($file);
         }
@@ -194,3 +258,36 @@ function is_dir_empty($dir) {
   return TRUE;
 } 
 
+function objectfromConcatString($concatString){
+    $cpaObject = [[]];
+    $arrayL1= explode('~ ', $concatString);
+    foreach ($arrayL1 as $key => $value) {
+        echo $key;
+        $arrayL2 = explode('#', $value);
+        $cpaObject[$key]['apiCpa'] = $arrayL2[0] ; 
+        $cpaObject[$key]['level1Code'] = $arrayL2[1] ; 
+        $cpaObject[$key]['countCompanies'] = $arrayL2[2] ; 
+        $cpaObject[$key]['marketId'] = $arrayL2[3] ; 
+        $cpaObject[$key]['code'] = $arrayL2[4] ; 
+        $cpaObject[$key]['main'] = $arrayL2[5] ; 
+        $cpaObject[$key]['parent'] = $arrayL2[6] ; 
+        
+    }
+    return  $cpaObject;
+}
+
+function checkBidToVat($conn,$vat){
+    $sql = "SELECT * FROM BidToVat where vatId='$vat' order by date desc limit 1 ";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+         while($row = $result->fetch_assoc()){
+             return $row['bid'].'-'.$row['gemhnumber'];
+         }
+    }
+    else {
+        return NULL;
+    }
+    
+    
+    
+}
