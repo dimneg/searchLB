@@ -4,7 +4,7 @@ include 'collectData.php';
 include 'Rdf.php';
 include 'showResults.php';
 $couchUserPwd = couchUser.':'.couchPass;
-$dateUpdate = '2018-07-28';
+$dateUpdate = '2019-09-09';
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
@@ -12,7 +12,16 @@ $transform = new collectData();
 
 $ch = curl_init();
 $db = nonGemhcouchDB;
-$dir_base= "d:/temp/non_gemh/";
+
+if (PHP_OS==='WINNT') {
+    $dir_base= "C:/temp/non_gemh/";
+}
+else {
+    $dir_base= "/home/user/searchLB/temp/non_gemh";
+}
+
+
+
  
  if (file_exists($dir_base."found/")) {
      deleteDir($dir_base."found/"); //delete temp folder
@@ -22,7 +31,22 @@ $dir_base= "d:/temp/non_gemh/";
          
  }
 #$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate >= '$dateUpdate'  limit 10000 offset 10000";
-$inputPath='C:\temp/onlyGsis/';
+# $inputPath='C:\temp/onlyGsis/';
+ 
+ $inputPath = 'C:/Users/negkas/Dropbox/lod/onlyGsis/';
+
+if (!file_exists($inputPath)) { 
+    
+   $inputPath ='C:/Users/dimitris negkas/Dropbox/lod/onlyGsis/';
+    
+}
+else {
+    
+    echo 'input path ok';
+}
+ 
+ 
+
 $files=array_diff(scandir($inputPath), array('..', '.'));
 
 foreach($files as $let=>$word){
@@ -81,6 +105,21 @@ foreach($files as $let=>$word){
                     curl_close($chDel);
                 }
                 
+                $diavgeiaApprovals = Rdf::requestDiaugeiaExpenseApprovalItem(connection_url,$id,'Organization');
+                $diavgeiaApprovalsCnt = $diavgeiaApprovals[1];
+                $diavgeiaApprovalsAmount = $diavgeiaApprovals[0];
+                echo $diavgeiaApprovalsCnt.PHP_EOL; 
+         
+                 $diavgeiaPayments = Rdf::requestDiaugeiaPaymentItem(connection_url,$id,'Organization');
+         #$diavgeiaPaymentsCnt = $diavgeiaApprovals[1]+$diavgeiaPayments[1];
+                $diavgeiaPaymentsCnt = $diavgeiaPayments[1];
+                $diavgeiaPaymentsAmount = $diavgeiaPayments[0];
+                 echo  $diavgeiaPaymentsCnt .PHP_EOL; 
+         
+              $espaContracts = Rdf::requestEspaContracts(connection_url, $id,'Organization');         
+              $espaContractsCnt =(isset( $espaContracts[1] )) ?  $espaContracts[1] : '' ;  
+              $espaContractsAmount =(isset( $espaContracts[0] )) ? $espaContracts[0] : '' ; 
+                
                  $arr = array(
                     "id"   => $id,
                     "vat"   => $row[0],     
@@ -100,9 +139,19 @@ foreach($files as $let=>$word){
                     'indexeddate'=>date("Y-m-d"),
                     #'correctVat'=>isset($row['correctVat']) ? $row['correctVat'] : '',
                      'link' => $link,
+                     'diavgeia_payments_cnt'=> $diavgeiaPaymentsCnt, 
+                    'diavgeia_payments_amount'=>  showResults::convertAmountToText($diavgeiaPaymentsAmount,'€'),
+                    'diavgeia_approvals_cnt'=> $diavgeiaApprovalsCnt, 
+                    'diavgeia_approvals_amount'=>showResults::convertAmountToText($diavgeiaApprovalsAmount,'€'),
+                    'diavgeia_last_update'=>Rdf::requesDiaugeiaLastUpdate(connection_url, $id,'Organization'),
+                     'espa_contracts_cnt'=> $espaContractsCnt,
+                    'espa_contracts_amount'=>showResults::convertAmountToText($espaContractsAmount,'€'),
+                    'espa_payments_cnt'=>NULL,
+                    'espa_payments_amount'=>NULL,
+                    'espa_last_update'=>  Rdf::requestEspaLastUpdate(connection_url, $id,'Organization')
                
          );
-                  $counter++; 
+                 # $counter++; 
          
          $file_contents=json_encode($arr,JSON_UNESCAPED_UNICODE);
 

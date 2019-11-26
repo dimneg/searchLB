@@ -53,7 +53,7 @@ $sql = "  SELECT m.vatId, m.gemhnumber, m.orgType, m.street, m.postalCode, m.loc
         . "  FROM Main m  left join companyCpa cc on cc.gemhnumber = m.gemhNumber left join CpaList cl on cl.apiCpa=cc.apiCpa "
         ." right join  companyCpa cc2 on cc2.gemhnumber = m.gemhNumber right join CpaList cl2 on (cl2.apiCpa=cc2.apiCpa and  cc2.main = 1) "
         . "where (m.orgtype = 'FR' ) "
-        . "and m.issueddate >= '$date' and m.issueddate <= '2019-11-19' "
+        . "and m.issueddate >= '$date' and m.issueddate <= '2019-11-25' "
        # . "and m.issueddate = '2019-04-09' "
        #. " and m.gemhnumber='001037501000' " //148595001000 //003467701000 //001352601000
         . "group by m.gemhnumber  ";
@@ -130,18 +130,18 @@ if ($result->num_rows > 0) {
          
          #$Rdf = new Rdf();
          
-         $diavgeiaApprovals = Rdf::requestDiaugeiaExpenseApprovalItem(connection_url,$row['vatId']);
+         $diavgeiaApprovals = Rdf::requestDiaugeiaExpenseApprovalItem(connection_url,$row['vatId'],'Organization');
          $diavgeiaApprovalsCnt = $diavgeiaApprovals[1];
          $diavgeiaApprovalsAmount = $diavgeiaApprovals[0];
          echo $diavgeiaApprovalsCnt.PHP_EOL; 
          
-         $diavgeiaPayments = Rdf::requestDiaugeiaPaymentItem(connection_url,$row['vatId']);
+         $diavgeiaPayments = Rdf::requestDiaugeiaPaymentItem(connection_url,$row['vatId'],'Organization');
          #$diavgeiaPaymentsCnt = $diavgeiaApprovals[1]+$diavgeiaPayments[1];
          $diavgeiaPaymentsCnt = $diavgeiaPayments[1];
          $diavgeiaPaymentsAmount = $diavgeiaPayments[0];
          echo  $diavgeiaPaymentsCnt .PHP_EOL; 
          
-         $espaContracts = Rdf::requestEspaContracts(connection_url, $row['vatId']);         
+         $espaContracts = Rdf::requestEspaContracts(connection_url, $row['vatId'],'Organization');         
          $espaContractsCnt =(isset( $espaContracts[1] )) ?  $espaContracts[1] : '' ;  
          $espaContractsAmount =(isset( $espaContracts[0] )) ? $espaContracts[0] : '' ; 
          
@@ -170,7 +170,7 @@ if ($result->num_rows > 0) {
                     'diavgeia_payments_amount'=>  showResults::convertAmountToText($diavgeiaPaymentsAmount,'€'),
                     'diavgeia_approvals_cnt'=> $diavgeiaApprovalsCnt, 
                     'diavgeia_approvals_amount'=>showResults::convertAmountToText($diavgeiaApprovalsAmount,'€'),
-                    'diavgeia_last_update'=>Rdf::requesDiaugeiaLastUpdate(connection_url, $row['vatId'],$type),
+                    'diavgeia_last_update'=>Rdf::requesDiaugeiaLastUpdate(connection_url, $row['vatId'],'Organization'),
                     #'khmdhs_contracts_cnt'=>0,
                     #'khmdhs_contracts_amount'=>0,   
                     #'khmdhs_payments_cnt'=>0,
