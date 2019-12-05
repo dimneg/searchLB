@@ -169,7 +169,7 @@ class Rdf {
    public static function requesDiaugeiaLastUpdate($connection_url, $vatid,$type){
           $qry = "SELECT MAX(?date) as ?date MAX(?lastSearched) as ?lastSearched 
                             FROM <http://linkedeconomy.org/Diavgeia>
-                            FROM <http://linkedeconomy.org/GemhOrganizations>
+                            FROM <http://linkedeconomy.org/Organizations>
                             FROM <http://linkedeconomy.org/Persons>
                             WHERE { 
                             {

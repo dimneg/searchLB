@@ -32,7 +32,7 @@ if ($manualDate !=''){
  }
  else {
      
-     $date =  '2019-08-01';
+     $date =  '2019-11-20';
      
  }
  
@@ -50,7 +50,7 @@ $sql = " SELECT  pd.id, pd.vatNumber,"
         . " on o.gemhNumber = m.gemhNumber  left join MemberPosition mp  on mp.personId=pd.id  left join Main m2  on mp.gemhNumber = m2.gemhNumber "
         . " left join Main m3 on m3.vatId = pd.vatNumber "
        # . " where pd.issueddate >= subdate(current_date,0 ) "
-	. " where  pd.issueddate >= '$date' AND pd.issueddate <= '2019-08-31' "
+	. " where  pd.issueddate >= '$date' AND pd.issueddate <= '2019-11-25' "
        # . " where pd.vatNumber = '003352545' "
         . " group by pd.id ";
        # . "' ";
