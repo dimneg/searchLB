@@ -7,7 +7,7 @@ $couchUserPwd = couchUser.':'.couchPass;
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
-$dateUpdate = '2018-08-03';
+
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
@@ -41,34 +41,58 @@ else {
  }
  else {
      
-     $date =  '2019-11-25';
+     $date =  '2020-01-16';
      
  }
  
 $sql ="SET SESSION group_concat_max_len = 1000000;";
+echo $sql.PHP_EOL;
 $result = $connGemh->query($sql);
 #$sql = "SELECT * FROM Main where orgtype <> 'FR'  and issueddate >= '$dateUpdate'  limit 10000 offset 10000";
-$sql = "  SELECT m.vatId, m.gemhnumber, m.orgType, m.street, m.postalCode, m.locality, m.name, m.brandname, m.status, m.chamber, m.gemhdate, m.registrationDate, m.issueddate, m.correctVat,"
+/*$sql = "  SELECT m.vatId, m.gemhnumber, m.orgType, m.street, m.postalCode, m.locality, m.name, m.brandname, m.status, m.chamber, m.gemhdate, m.registrationDate, m.issueddate, m.correctVat,"
         . " cl2.title ,  (select (group_concat( distinct cl.apiCpa,'#',cl.level1Code,'#',cl.countCompanies,'#',IFNULL(cl.marketId,' '),'#',cl.code,'#',cc.main,'#',cl.parent SEPARATOR '~ ') ) ) as cpaArray "
         . "  FROM Main m  left join companyCpa cc on cc.gemhnumber = m.gemhNumber left join CpaList cl on cl.apiCpa=cc.apiCpa "
         ." right join  companyCpa cc2 on cc2.gemhnumber = m.gemhNumber right join CpaList cl2 on (cl2.apiCpa=cc2.apiCpa and  cc2.main = 1) "
         . "where (m.orgtype <> 'FR' ) "
-        . "and m.issueddate >= '$date' and m.issueddate <= '2019-12-04' "
+        . "and m.issueddate >= '$date' and m.issueddate <= '2020-01-06' "
        # . "and m.issueddate = '2019-04-09' "
        #. " and m.gemhnumber='001037501000' " //148595001000 //003467701000 //001352601000
-        . "group by m.gemhnumber  ";
+        . "group by m.gemhnumber  "; */
+
+$sql = "  drop table if exists TempGemhIndex ; ";
+echo $sql.PHP_EOL;
+$result = $connGemh->query($sql);
         
+
+
+$sql = " create temporary table TempGemhIndex "
+        . " select m.*,cc.apiCpa from  Main m   "
+        . " left join companyCpa cc on cc.gemhnumber = m.gemhNumber and main=1 "
+        . " where (m.orgtype <> 'FR' ) and m.issueddate >= '2020-01-01`' and m.issueddate <= '2020-02-05' group by m.gemhnumber ;";
+echo $sql.PHP_EOL;
+$result = $connGemh->query($sql);
+        
+
+
+$sql =  " select m.vatId, m.gemhnumber, m.orgType, m.street, m.postalCode, m.locality, m.name, m.brandname, m.status, m.chamber, m.gemhdate, m.registrationDate, m.issueddate, m.correctVat ,cl2.title,"
+        . " (group_concat( distinct cl.apiCpa,'#',cl.level1Code,'#',cl.countCompanies,'#',IFNULL(cl.marketId,' '),'#',cl.code,'#',cc.main,'#',cl.parent SEPARATOR '~ ') ) as cpaArray "
+        . " from TempGemhIndex m left join companyCpa cc on cc.gemhNumber=m.gemhnumber "
+        . " left join CpaList cl on cl.apiCpa=cc.apiCpa "
+        . " left join CpaList cl2 on cl2.apiCpa=m.apiCpa "
+        . " group by m.gemhnumber ; ";    
+
  #$sql = "SELECT * FROM Main where (orgtype <> 'FR' or orgtype is null) and vatId= '997834472'  ";
-echo $sql;
+echo $sql.PHP_EOL;
 $result = $connGemh->query($sql);
 if ($result->num_rows > 0) {
      while($row = $result->fetch_assoc()){
-         if ($row['cpaArray'] !=='') {
+         if (isset( $row['cpaArray'] ))  {
              $cpaAll = objectfromConcatString($row['cpaArray']);
          }
          else {
               $cpaAll = [];
          }
+         print_r ($row['cpaArray'] );
          if ($row['correctVat']==='true'){
             $bidVat= checkBidToVat($connGemh,$row['vatId']);
             if ($bidVat == NULL) {
