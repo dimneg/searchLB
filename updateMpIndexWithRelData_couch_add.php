@@ -17,7 +17,7 @@ if (file_exists($dir_base."found/")) {
          
  }
 
-$dateUpdate = '2019-05-01';
+$dateUpdate = '2020-02-18';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 

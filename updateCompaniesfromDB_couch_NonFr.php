@@ -7,12 +7,15 @@ $couchUserPwd = couchUser.':'.couchPass;
 $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
+$file = 'bidtoVatNonFR';
 
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
 $db = companiescouchDB;
 $ch = curl_init();
+
+$fromList = 1;
 
 $manualDate = isset($argv[1]) ? $argv[1]: '';
 
@@ -62,13 +65,29 @@ $result = $connGemh->query($sql);
 $sql = "  drop table if exists TempGemhIndex ; ";
 echo $sql.PHP_EOL;
 $result = $connGemh->query($sql);
+
+$sql = " create temporary table TempGemhIndex select m.*,cc.apiCpa from  Main m  left join companyCpa cc on cc.gemhnumber = m.gemhNumber and main=1  where (m.orgtype <> 'FR' )  and m.gemhNumber in ( ";
+ $sql.= readTxt($file); 
+ $sql.= "  ) group by m.gemhnumber ; ";
         
-
-
-$sql = " create temporary table TempGemhIndex "
+#if ($fromList ==1){
+ #   $sql = " create temporary table TempGemhIndex "
+  #      . " select m.*,cc.apiCpa from  Main m   "
+   #     . " left join companyCpa cc on cc.gemhnumber = m.gemhNumber and main=1 "
+    #        . " join BidToVat b on b.gemhnumber =  m.gemhNumber"
+     #   . " where (m.orgtype <> 'FR' ) and m.issueddate='2019-04-19' group by m.gemhnumber ;";
+    
+#}
+#else {
+/*
+    $sql = " create temporary table TempGemhIndex "
         . " select m.*,cc.apiCpa from  Main m   "
         . " left join companyCpa cc on cc.gemhnumber = m.gemhNumber and main=1 "
-        . " where (m.orgtype <> 'FR' ) and m.issueddate >= '2020-01-01`' and m.issueddate <= '2020-02-05' group by m.gemhnumber ;";
+        . " where (m.orgtype <> 'FR' ) and m.gemhNumber ='036527016000 ' and m.issueddate >= '2019-04-19' and m.issueddate <= '2019-04-19' group by m.gemhnumber ;";
+    */
+#}
+
+
 echo $sql.PHP_EOL;
 $result = $connGemh->query($sql);
         
@@ -94,13 +113,13 @@ if ($result->num_rows > 0) {
          }
          print_r ($row['cpaArray'] );
          if ($row['correctVat']==='true'){
-            $bidVat= checkBidToVat($connGemh,$row['vatId']);
-            if ($bidVat == NULL) {
+           # $bidVat= checkBidToVat($connGemh,$row['vatId']);
+           # if ($bidVat == NULL) {
                 $link = $row['vatId'];
-            }
-            else {
-                 $link = $bidVat;
-            }
+           # }
+           # else {
+            #     $link = $bidVat;
+            #}
             
          }
          else {
@@ -313,5 +332,27 @@ function checkBidToVat($conn,$vat){
     }
     
     
+    
+}
+
+function readTxt($file){
+    
+    $array = [];
+    
+    if (($handle = fopen($file, "r")) !== FALSE){
+    
+        while (($data = fgetcsv($handle, 100000, ",")) !== FALSE) {	
+            
+            if(!mb_detect_encoding($data[0] , 'utf-8', true)){
+                $data[0]  = utf8_encode($data[0]);
+                }
+                
+                $array[] = $data[0];
+            
+            
+        }
+    
+    }
+    return implode(',', $array);
     
 }

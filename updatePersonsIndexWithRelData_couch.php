@@ -10,7 +10,7 @@ $time_pre = microtime(true);
 $counter = 1;
 $transform = new collectData();
 
-$dateUpdate = '2018-09-21';
+$dateUpdate = '2018-09-24';
 $connGemh =  new MySQLi(gemhDb_host, gemhDb_user, gemhDb_pass, gemhDb_name);
 mysqli_set_charset($connGemh,"utf8");
 
@@ -32,7 +32,7 @@ if ($manualDate !=''){
  }
  else {
      
-     $date =  '2019-11-20';
+     $date =  '2020-02-18';
      
  }
  
@@ -50,7 +50,7 @@ $sql = " SELECT  pd.id, pd.vatNumber,"
         . " on o.gemhNumber = m.gemhNumber  left join MemberPosition mp  on mp.personId=pd.id  left join Main m2  on mp.gemhNumber = m2.gemhNumber "
         . " left join Main m3 on m3.vatId = pd.vatNumber "
        # . " where pd.issueddate >= subdate(current_date,0 ) "
-	. " where  pd.issueddate >= '$date' AND pd.issueddate <= '2019-11-25' "
+	. " where  pd.issueddate >= '$date' AND pd.issueddate <= '2020-02-18' "
        # . " where pd.vatNumber = '003352545' "
         . " group by pd.id ";
        # . "' ";
@@ -118,13 +118,13 @@ if ($result->num_rows > 0) {
             
          }
          if ($row['s_mgmtCorrectVat']==='true'){
-			 $s_mgmt_bidVat= checkBidToVat($connGemh,$row['s_mgmtCompanyVat']);
-             if ($s_mgmt_bidVat == NULL) {
-				 $s_mgmtCompanyLink = $row['s_mgmtCompanyVat'];
-			 }
-			 else {
-				  $s_mgmtCompanyLink = $s_mgmt_bidVat;
-			 }
+			# $s_mgmt_bidVat= checkBidToVat($connGemh,$row['s_mgmtCompanyVat']);
+           #  if ($s_mgmt_bidVat == NULL) {
+			 $s_mgmtCompanyLink = $row['s_mgmtCompanyVat'];
+		#	 }
+		#	 else {
+				#  $s_mgmtCompanyLink = $s_mgmt_bidVat;
+		#	 }
             
          }
          else {
@@ -132,13 +132,13 @@ if ($result->num_rows > 0) {
               $s_mgmtCompanyLink = $row['s_mgmtCompanyVat'].'-'.$row['s_mgmtGemhNumber'];
          }
          if ($row['s_ownCorrectVat']==='true'){
-			  $s_own_bidVat= checkBidToVat($connGemh,$row['s_mgmtCompanyVat']);
-			   if ($s_own_bidVat == NULL) {
+			 # $s_own_bidVat= checkBidToVat($connGemh,$row['s_mgmtCompanyVat']);
+			 #  if ($s_own_bidVat == NULL) {
 				   $s_ownCompanyLink = $row['s_ownCompanyVat'];
-			   }
-			   else {
-				    $s_ownCompanyLink = $s_own_bidVat;
-			   }
+			  # }
+			   #else {
+			#	    $s_ownCompanyLink = $s_own_bidVat;
+			 #  }
             
              
          }
